@@ -265,7 +265,8 @@ Alle kleuren staan als CSS custom properties bovenin `src/styles/global.css`:
 
 ### Fonts en licenties
 
-- **Fraunces** (soft-variant) van Undercase Type: SIL Open Font License, gratis voor commercieel gebruik. De licentie staat in `public/fonts/Fraunces-LICENSE.txt`. Hoe zacht de letters zijn, stel je in met `--display-soft` in `src/styles/global.css` (0 = scherp, 100 = zacht).
+- **Gloria Hallelujah** van Kimberly Geswein: SIL Open Font License, gratis voor commercieel gebruik. De licentie staat in `public/fonts/GloriaHallelujah-LICENSE.txt`. Dit is nu het displayfont.
+- **Fraunces** (soft-variant, staat klaar als reserve: zet `--font-display` in `src/styles/global.css` terug op `'Fraunces'`) van Undercase Type: SIL Open Font License, gratis voor commercieel gebruik. De licentie staat in `public/fonts/Fraunces-LICENSE.txt`. Hoe zacht de letters zijn, stel je in met `--display-soft` in `src/styles/global.css` (0 = scherp, 100 = zacht).
 - **Switzer** van Indian Type Foundry / Fontshare: ITF Free Font License, gratis voor persoonlijk en commercieel gebruik.
 
 ### Placeholder-video's in projecten

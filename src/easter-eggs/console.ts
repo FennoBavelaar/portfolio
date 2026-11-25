@@ -6,7 +6,7 @@ const egg: EasterEgg = {
   init() {
     if ((window as any).__fennoConsole) return;
     (window as any).__fennoConsole = true;
-    const big = 'font: 700 28px Fraunces, Georgia, serif; color:#1b2e5a; background:#f3eee3; padding:10px 16px; border-radius:6px;';
+    const big = 'font: 700 28px "Gloria Hallelujah", Georgia, serif; color:#1b2e5a; background:#f3eee3; padding:10px 16px; border-radius:6px;';
     const small = 'font: 13px/1.6 Switzer, sans-serif; color:#1b2e5a;';
     console.log(
       `%c

@@ -92,7 +92,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
 
 <style>
   .project__head {
-    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 3vw, 2rem);
+    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1.75rem, 4vw, 3rem);
   }
   .project__title {
     font-size: var(--step-4);
@@ -240,7 +240,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
     font-family: var(--font-display);
     font-weight: 700;
     font-size: var(--step-4);
-    line-height: 1;
+    line-height: var(--display-leading);
   }
   .next__title span {
     display: inline-block;

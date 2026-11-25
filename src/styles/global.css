@@ -1,8 +1,17 @@
 /* ==========================================================================
    Fonts (zelf gehost)
-   Fraunces (soft) — Undercase Type, SIL Open Font License
+   Gloria Hallelujah — Kimberly Geswein, SIL Open Font License
+   Fraunces (soft) — Undercase Type, SIL Open Font License (reserve)
    Switzer   — Fontshare / Indian Type Foundry, ITF Free Font License
    ========================================================================== */
+/* Eén gewicht; door 100–900 te declareren wordt hij nooit nep-vet gemaakt. */
+@font-face {
+  font-family: 'Gloria Hallelujah';
+  src: url('/fonts/GloriaHallelujah.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: 'Fraunces';
   src: url('/fonts/Fraunces-Soft.woff2') format('woff2-variations'), url('/fonts/Fraunces-Soft.woff2') format('woff2');
@@ -59,7 +68,11 @@
   --accent: var(--blue);
   --accent-hover: var(--blue-light);
 
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  /* Wisselen van displayfont? Zet hier 'Fraunces' terug in plaats van 'Gloria Hallelujah'
+     (en pas de preload in src/layouts/Base.astro aan). */
+  --font-display: 'Gloria Hallelujah', 'Comic Neue', 'Marker Felt', cursive;
+  /* regelhoogte van het displayfont (Gloria heeft hoge uitschieters; Fraunces kan op 1.02) */
+  --display-leading: 1.25;
   /* "soft": de SOFT-as van Fraunces op max (0 = scherp, 100 = zacht) */
   --display-soft: 100;
   --font-body: 'Switzer', 'Helvetica Neue', Arial, sans-serif;
@@ -135,7 +148,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.02;
+  line-height: var(--display-leading);
   margin: 0;
   letter-spacing: -0.01em;
   text-wrap: balance;
