@@ -1,0 +1,267 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getProjects } from '../lib/projects';
+import { site } from '../lib/site';
+
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured);
+const letters = [...site.name];
+---
+
+<Base>
+  <link slot="head" rel="preload" as="image" href={site.showreel.poster} fetchpriority="high" />
+
+  <section class="hero" aria-label="Showreel">
+    <video
+      class="hero__video"
+      src={site.showreel.video}
+      poster={site.showreel.poster}
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      data-cursor="sound"
+      data-cursor-label="geluid aan"
+      aria-label="Showreel"
+    ></video>
+    <div class="hero__shade" aria-hidden="true"></div>
+
+    <h1 class="hero__name" data-egg-name aria-label={site.name}>
+      {letters.map((l) => <span class="hero__letter" aria-hidden="true">{l}</span>)}
+    </h1>
+    <p class="hero__role">{site.role}</p>
+
+    <div class="hero__controls">
+      <button class="hero__btn hero__sound" type="button" aria-pressed="false">
+        <span class="hero__sound-icon" aria-hidden="true"></span>
+        <span class="hero__sound-label">Geluid aan</span>
+      </button>
+      <button class="hero__btn hero__play" type="button" aria-pressed="true" hidden>Pauzeer</button>
+    </div>
+    <a class="hero__scroll" href="#uitgelicht">Bekijk werk <span aria-hidden="true">↓</span></a>
+  </section>
+
+  <section id="uitgelicht" class="featured wrap" aria-labelledby="uitgelicht-titel">
+    <div class="section-head" data-reveal>
+      <h2 id="uitgelicht-titel">Uitgelicht</h2>
+      <a href="/werk" class="btn">Al het werk <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="featured__grid" data-reveal-stagger>
+      {featured.map((p, i) => <ProjectCard project={p} size={i === 0 ? 'large' : 'normal'} />)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    height: calc(100svh - var(--header-h));
+    min-height: 26rem;
+    overflow: hidden;
+    background: var(--blue);
+    color: var(--cream);
+    isolation: isolate;
+  }
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(to top, color-mix(in srgb, var(--blue) 75%, transparent), transparent 55%);
+    pointer-events: none;
+  }
+  .hero__name {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: clamp(4.5rem, 10vh, 7rem);
+    font-size: clamp(3.5rem, 18vw, 22rem);
+    white-space: nowrap;
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    display: flex;
+    overflow: hidden;
+    padding-top: 0.08em;
+    cursor: default;
+    user-select: none;
+    pointer-events: auto;
+  }
+  .hero__letter {
+    display: inline-block;
+  }
+  .hero__role {
+    position: absolute;
+    left: var(--gutter);
+    bottom: clamp(2.4rem, 5vh, 3.5rem);
+    margin: 0;
+    font-size: var(--step-0);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .hero__controls {
+    position: absolute;
+    right: var(--gutter);
+    top: 1.25rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: color-mix(in srgb, var(--blue) 55%, transparent);
+    border: 1px solid var(--cream-70);
+    color: var(--cream);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.2s;
+  }
+  .hero__btn:hover {
+    background: var(--blue-light);
+  }
+  .hero__sound-icon {
+    width: 1rem;
+    height: 0.8rem;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .hero__sound-icon::before,
+  .hero__sound-icon::after {
+    content: '';
+    flex: 1;
+    background: currentColor;
+    height: 30%;
+  }
+  .hero__sound[aria-pressed='true'] .hero__sound-icon::before {
+    animation: eq 0.8s ease-in-out infinite alternate;
+  }
+  .hero__sound[aria-pressed='true'] .hero__sound-icon::after {
+    animation: eq 0.6s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes eq {
+    to {
+      height: 100%;
+    }
+  }
+  .hero__scroll {
+    position: absolute;
+    right: var(--gutter);
+    bottom: clamp(2.4rem, 5vh, 3.5rem);
+    font-size: var(--step--1);
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero__scroll:hover {
+    color: var(--cream);
+    opacity: 0.75;
+  }
+
+  .featured {
+    padding-top: clamp(3rem, 8vw, 6rem);
+  }
+  :global(.section-head) {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  :global(.section-head h2) {
+    font-size: var(--step-3);
+  }
+  .featured__grid {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 2.5vw, 2rem);
+  }
+  @media (min-width: 48em) {
+    .featured__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .featured__grid > :global(.card--large) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initHoverPreviews } from '../scripts/previews';
+  import { reducedMotion } from '../scripts/motion';
+
+  initHoverPreviews();
+
+  // Laat de naam precies de breedte vullen, hoe lang hij ook is.
+  const nameEl = document.querySelector<HTMLElement>('.hero__name')!;
+  const fit = () => {
+    nameEl.style.fontSize = '';
+    const avail = nameEl.clientWidth;
+    const used = [...nameEl.children].reduce((w, c) => w + (c as HTMLElement).offsetWidth, 0);
+    const size = parseFloat(getComputedStyle(nameEl).fontSize);
+    if (used > 0) nameEl.style.fontSize = `${Math.min(size * (avail / used) * 0.98, 352)}px`;
+  };
+  document.fonts.ready.then(fit);
+  window.addEventListener('resize', fit);
+
+  const video = document.querySelector<HTMLVideoElement>('.hero__video')!;
+  const soundBtn = document.querySelector<HTMLButtonElement>('.hero__sound')!;
+  const soundLabel = soundBtn.querySelector('.hero__sound-label')!;
+  const playBtn = document.querySelector<HTMLButtonElement>('.hero__play')!;
+
+  const setSound = (on: boolean) => {
+    video.muted = !on;
+    if (on) {
+      video.volume = 1;
+      video.play().catch(() => {});
+    }
+    soundBtn.setAttribute('aria-pressed', String(on));
+    soundLabel.textContent = on ? 'Geluid uit' : 'Geluid aan';
+    video.dataset.cursorLabel = on ? 'geluid uit' : 'geluid aan';
+    document.dispatchEvent(new Event('cursor:refresh'));
+  };
+  const toggleSound = () => setSound(video.muted);
+  video.addEventListener('click', toggleSound);
+  soundBtn.addEventListener('click', toggleSound);
+
+  // Bij "minder beweging": niet automatisch afspelen, maar een play-knop tonen.
+  const syncPlay = () => {
+    playBtn.setAttribute('aria-pressed', String(!video.paused));
+    playBtn.textContent = video.paused ? 'Speel af' : 'Pauzeer';
+  };
+  playBtn.hidden = false;
+  let userPaused = reducedMotion();
+  playBtn.addEventListener('click', () => {
+    userPaused = !video.paused;
+    video.paused ? video.play() : video.pause();
+  });
+  video.addEventListener('play', syncPlay);
+  video.addEventListener('pause', syncPlay);
+  if (!reducedMotion()) video.play().catch(() => {});
+  syncPlay();
+
+  // Pauzeer de showreel als hij uit beeld is (scheelt batterij)
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) video.pause();
+    else if (!userPaused) video.play().catch(() => {});
+  }).observe(video);
+
+  if (!reducedMotion()) {
+    gsap.from('.hero__letter', { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.06, delay: 0.1 });
+    gsap.from('.hero__role, .hero__controls, .hero__scroll', { opacity: 0, y: 10, duration: 0.8, delay: 0.6, stagger: 0.08 });
+  }
+</script>

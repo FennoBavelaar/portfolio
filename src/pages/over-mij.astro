@@ -1,0 +1,202 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../lib/site';
+
+// Voorlopig lorem ipsum. Vervang deze alinea's door je eigen (belachelijk lange) verhaal.
+const alineas = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.',
+  'Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque.',
+  'Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.',
+  'Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus. In convallis tellus a mauris. Curabitur non elit ut libero tristique sodales. Mauris a lacus. Donec mattis semper leo. In hac habitasse platea dictumst. Vivamus facilisis diam at odio. Mauris dictum, nisi eget consequat elementum, lacus ligula molestie metus, non feugiat orci magna ac sem.',
+  'Donec turpis. Donec vitae metus. Morbi tristique neque eu mauris. Quisque gravida ipsum non sapien. Proin turpis lacus, scelerisque vitae, elementum at, lobortis ac, quam. Aliquam dictum eleifend risus. In hac habitasse platea dictumst. Etiam sit amet diam. Suspendisse odio. Suspendisse at purus id erat posuere congue.',
+  'Vivamus vestibulum, elit in sollicitudin aliquet, urna nisi vehicula nisi, vel vestibulum eros ante nec dui. Fusce posuere mauris sed nunc porta mattis. Etiam congue tellus in nibh. Nunc ullamcorper massa a augue. Integer at mauris. Curabitur eget nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.',
+  'Nam ac sem quis turpis condimentum dictum. Fusce sollicitudin, nibh id iaculis faucibus, libero ipsum consectetuer leo, vitae egestas urna ipsum non nunc. Morbi pellentesque. Sed congue neque eu urna. Phasellus sagittis tristique lectus. Fusce rhoncus faucibus lectus. Aenean vitae diam vitae lorem tincidunt rhoncus. Curabitur blandit ullamcorper turpis.',
+  'Praesent sodales, quam vitae gravida interdum, ex mi aliquet urna, eget congue mauris enim et mi. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Morbi volutpat, mauris sit amet consequat pretium, lacus nulla blandit tellus, at aliquet leo lacus et nisl. Nam sapien arcu, sodales vitae, rutrum eu, ultrices eget, mi.',
+  'Quisque ultricies, nisi sit amet imperdiet facilisis, tellus nunc pharetra arcu, a mollis lorem turpis ut diam. Sed lobortis dignissim lectus. Phasellus rutrum, quam at varius consectetuer, augue est scelerisque mi, sed porta ante metus in nisi. Proin venenatis, dui id euismod molestie, magna risus faucibus sem, ac commodo dolor nisl nec tellus.',
+  'Etiam ultrices, mauris eu viverra accumsan, ipsum elit dignissim lacus, ut tincidunt enim nisi id nibh. Mauris eleifend, tortor non feugiat volutpat, dui neque dapibus massa, nec vulputate odio justo et orci. Integer vel purus. Nulla facilisi. Sed rhoncus mauris non tellus. Quisque tempor, mauris vitae varius auctor, quam ante tincidunt eros, eu faucibus urna orci sed dolor.',
+  'Cras ultricies ligula sed magna dictum porta. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Nulla porttitor accumsan tincidunt. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Pellentesque in ipsum id orci porta dapibus. Donec rutrum congue leo eget malesuada. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.',
+];
+---
+
+<Base title="Over mij" description={`Over ${site.name}. Kort gehouden. Min of meer.`}>
+  <section class="wrap about">
+    <h1 class="page-title">Over mij</h1>
+
+    <div class="about__text">
+      <p class="about__lead">
+        Oké, laten we het kort houden...<button
+          id="about-toggle"
+          class="about__toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="about-meer"
+          ><span class="about__label about__label--more">meer tonen</span><span class="about__label about__label--less" aria-hidden="true"
+            >minder tonen</span
+          ></button
+        >
+      </p>
+
+      <div id="about-meer" class="about__more" hidden>
+        <div class="about__more-inner">
+          {alineas.map((t) => <p>{t}</p>)}
+          <p class="about__outro">(Dit was de korte versie.)</p>
+        </div>
+      </div>
+      <div class="about__spacer" aria-hidden="true"></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about__text {
+    max-width: 46rem;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+  .about__lead {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-3);
+    line-height: 1.12;
+    margin: 0;
+  }
+  /* De knop staat inline direct achter de "...". Beide labels zitten in dezelfde
+     grid-cel, zodat de knop altijd even breed is en nooit verspringt of wrapt. */
+  .about__toggle {
+    display: inline-grid;
+    vertical-align: baseline;
+    margin-left: 0.35em;
+    padding: 0.2em 0.75em 0.25em;
+    border: 1.5px solid var(--blue);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blue);
+    font-family: var(--font-body);
+    font-size: max(0.95rem, 0.38em);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    position: relative;
+    top: -0.2em;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .about__toggle:hover {
+    background: var(--blue-light);
+    border-color: var(--blue-light);
+    color: var(--cream);
+  }
+  .about__toggle[aria-expanded='true'] {
+    background: var(--blue);
+    color: var(--cream);
+  }
+  .about__toggle[aria-expanded='true']:hover {
+    background: var(--blue-light);
+  }
+  .about__label {
+    grid-area: 1 / 1;
+    text-align: center;
+  }
+  .about__label--less,
+  .about__toggle[aria-expanded='true'] .about__label--more {
+    visibility: hidden;
+  }
+  .about__toggle[aria-expanded='true'] .about__label--less {
+    visibility: visible;
+  }
+
+  .about__more {
+    overflow: hidden;
+    overflow-anchor: none;
+  }
+  .about__more-inner {
+    padding-top: 1.75rem;
+  }
+  .about__outro {
+    font-style: italic;
+    opacity: 0.8;
+  }
+  .about__spacer {
+    height: 0;
+    overflow-anchor: none;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../scripts/motion';
+  import { lenis } from '../scripts/smooth';
+
+  const btn = document.getElementById('about-toggle') as HTMLButtonElement;
+  const more = document.getElementById('about-meer') as HTMLElement;
+  const paras = [...more.querySelectorAll('p')];
+  const spacer = document.querySelector<HTMLElement>('.about__spacer')!;
+  const labelMore = btn.querySelector('.about__label--more')!;
+  const labelLess = btn.querySelector('.about__label--less')!;
+  let spacerH = 0;
+
+  const docHeight = () => document.documentElement.scrollHeight;
+  const setSpacer = (h: number) => {
+    spacerH = Math.max(0, Math.round(h));
+    spacer.style.height = `${spacerH}px`;
+  };
+
+  /** Houdt de knop op exact dezelfde plek in beeld (vangnet tegen elke verspringing). */
+  function pin(before: number) {
+    const diff = btn.getBoundingClientRect().top - before;
+    if (Math.abs(diff) < 0.5) return;
+    if (lenis) lenis.scrollTo(window.scrollY + diff, { immediate: true, force: true });
+    else window.scrollTo(0, window.scrollY + diff);
+  }
+
+  function setExpanded(open: boolean) {
+    btn.setAttribute('aria-expanded', String(open));
+    labelMore.toggleAttribute('aria-hidden', open);
+    labelLess.toggleAttribute('aria-hidden', !open);
+  }
+
+  function open() {
+    const top = btn.getBoundingClientRect().top;
+    setExpanded(true);
+    setSpacer(0);
+    more.hidden = false;
+    pin(top);
+    if (reducedMotion()) return;
+    gsap.killTweensOf([more, paras]);
+    gsap.fromTo(more, { height: 0 }, { height: 'auto', duration: 0.9, ease: 'expo.out', onUpdate: () => pin(top) });
+    gsap.fromTo(paras, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.045, delay: 0.05 });
+  }
+
+  function close() {
+    const top = btn.getBoundingClientRect().top;
+    setExpanded(false);
+    // Zorg dat de pagina niet korter wordt dan nodig om de knop op z'n plek te houden.
+    const finalHeight = docHeight() - more.offsetHeight;
+    setSpacer(window.scrollY + window.innerHeight - finalHeight);
+
+    const done = () => {
+      more.hidden = true;
+      gsap.set(more, { clearProps: 'height' });
+      gsap.set(paras, { clearProps: 'opacity,transform' });
+      pin(top);
+    };
+    if (reducedMotion()) return done();
+    gsap.killTweensOf([more, paras]);
+    gsap.to(paras, { opacity: 0, y: -6, duration: 0.25, ease: 'power1.in', stagger: { each: 0.015, from: 'end' } });
+    gsap.fromTo(more, { height: more.offsetHeight }, { height: 0, duration: 0.6, ease: 'expo.inOut', onUpdate: () => pin(top), onComplete: done });
+  }
+
+  btn.addEventListener('click', () => (btn.getAttribute('aria-expanded') === 'true' ? close() : open()));
+
+  // De extra ruimte onderaan krimpt weer weg zodra je omhoog scrolt.
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!spacerH) return;
+      const needed = window.scrollY + window.innerHeight - (docHeight() - spacerH);
+      if (needed < spacerH) setSpacer(needed);
+    },
+    { passive: true },
+  );
+</script>

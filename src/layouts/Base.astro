@@ -1,0 +1,174 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  /** Zet smooth scroll (Lenis) uit, bijv. op de social feed met scroll-snap. */
+  noSmoothScroll?: boolean;
+  bodyClass?: string;
+  hideFooter?: boolean;
+}
+
+const {
+  title,
+  description = `${site.name} — ${site.role.toLowerCase()}. Commercials, videoclips, short films, branded content en documentaires.`,
+  ogImage = '/og/default.png',
+  noSmoothScroll = false,
+  bodyClass = '',
+  hideFooter = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.role}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+---
+
+<!doctype html>
+<html lang="nl" data-smooth={noSmoothScroll ? 'off' : 'on'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#1b2e5a" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <link rel="preload" href="/fonts/Basteleur-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/switzer-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#inhoud">Direct naar de inhoud</a>
+    <Header />
+    <main id="inhoud">
+      <slot />
+    </main>
+    {!hideFooter && <Footer />}
+
+    <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: var(--blue);
+    pointer-events: none;
+    display: none;
+    place-items: center;
+    transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), margin 0.3s var(--ease-out),
+      background 0.3s, border-color 0.3s, opacity 0.2s;
+    border: 1.5px solid var(--blue);
+    opacity: 0;
+  }
+  .cursor.is-on {
+    opacity: 1;
+  }
+  html.has-cursor .cursor {
+    display: grid;
+  }
+  html.has-cursor,
+  html.has-cursor a,
+  html.has-cursor button,
+  html.has-cursor [data-cursor] {
+    cursor: none;
+  }
+  html.has-cursor input,
+  html.has-cursor textarea {
+    cursor: text;
+  }
+  .cursor__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .cursor[data-state='link'] {
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    background: transparent;
+  }
+  .cursor[data-state='play'],
+  .cursor[data-state='view'],
+  .cursor[data-state='sound'] {
+    width: 84px;
+    height: 84px;
+    margin: -42px 0 0 -42px;
+  }
+  .cursor[data-state='play'] .cursor__label,
+  .cursor[data-state='view'] .cursor__label,
+  .cursor[data-state='sound'] .cursor__label {
+    opacity: 1;
+  }
+  .cursor.is-on[data-state='hidden'] {
+    opacity: 0;
+  }
+  .cursor.is-down {
+    transform: scale(0.85);
+  }
+
+  /* Toast (voor korte bevestigingen) */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    z-index: 9000;
+    translate: -50% calc(100% + 3rem);
+    visibility: hidden;
+    background: var(--blue);
+    color: var(--cream);
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: var(--step--1);
+    box-shadow: 0 10px 30px var(--blue-20);
+    transition: translate 0.45s var(--ease-out), visibility 0s 0.45s;
+    pointer-events: none;
+    max-width: calc(100vw - 2rem);
+    text-align: center;
+  }
+  .toast.is-visible {
+    translate: -50% 0;
+    visibility: visible;
+    transition: translate 0.45s var(--ease-out), visibility 0s;
+  }
+</style>

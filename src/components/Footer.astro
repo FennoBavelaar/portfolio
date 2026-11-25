@@ -1,0 +1,76 @@
+---
+import { site } from '../lib/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div class="site-footer__cta">
+      <p class="eyebrow">Samen iets maken?</p>
+      <a class="site-footer__mail" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+    <ul class="site-footer__links">
+      {
+        site.socials.map((s) => (
+          <li>
+            <a href={s.url} target="_blank" rel="noopener">
+              {s.platform} <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="site-footer__bottom">
+      <small>© {year} {site.name}</small>
+      <small class="site-footer__hint">sommige dingen zie je pas bij de tweede take</small>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--blue);
+    color: var(--cream);
+    margin-top: clamp(4rem, 10vw, 8rem);
+    padding-block: clamp(3rem, 8vw, 6rem) 1.5rem;
+  }
+  .site-footer a:hover {
+    color: var(--cream);
+    opacity: 0.75;
+  }
+  .site-footer__inner {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .site-footer__mail {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 300;
+    text-decoration: none;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+  .site-footer__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--cream-20);
+    padding-top: 1.25rem;
+    font-size: var(--step--1);
+  }
+  .site-footer__hint {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    opacity: 0.55;
+    font-style: italic;
+  }
+</style>

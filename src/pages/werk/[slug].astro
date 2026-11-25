@@ -1,0 +1,305 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getProjects, embedSrc, parseEmbed, TYPE_LABELS, type Project } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.data.slug },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next: Project;
+}
+const { project, next } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+const src = embedSrc(data.videoEmbed);
+const provider = parseEmbed(data.videoEmbed)?.provider === 'youtube' ? 'YouTube' : 'Vimeo';
+const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().slice(0, 155) || `${data.title} voor ${data.client} (${data.year}).`;
+---
+
+<Base title={data.title} description={description} ogImage={`/og/${data.slug}.png`}>
+  <article class="project">
+    <div class="wrap">
+      <header class="project__head">
+        <p class="eyebrow">{TYPE_LABELS[data.type]} · {data.year}</p>
+        <h1 class="project__title">{data.title}</h1>
+      </header>
+
+      <div class="player" data-src={src}>
+        <button class="player__facade" type="button" data-cursor="play" aria-label={`Speel "${data.title}" af (laadt de ${provider}-speler)`}>
+          <img src={data.thumbnail} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+          <span class="player__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+          </span>
+        </button>
+        <noscript><a href={data.videoEmbed}>Bekijk de video op {provider}</a></noscript>
+      </div>
+
+      <div class="project__body">
+        <dl class="facts" data-reveal>
+          <div><dt>Klant</dt><dd>{data.client}</dd></div>
+          <div><dt>Jaar</dt><dd>{data.year}</dd></div>
+          <div><dt>Rol</dt><dd>{data.role}</dd></div>
+          <div><dt>Type</dt><dd>{TYPE_LABELS[data.type]}</dd></div>
+        </dl>
+
+        <div class="prose" data-reveal>
+          <Content />
+        </div>
+
+        {
+          data.credits.length > 0 && (
+            <section class="credits" aria-labelledby="credits-titel" data-reveal>
+              <h2 id="credits-titel" class="eyebrow">Credits</h2>
+              <dl>
+                {data.credits.map((c) => (
+                  <div>
+                    <dt>{c.role}</dt>
+                    <dd>{c.name}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )
+        }
+      </div>
+    </div>
+
+    {
+      next.id !== project.id && (
+        <a href={`/werk/${next.data.slug}`} class="next" data-cursor="view">
+          <div class="wrap next__inner">
+            <span class="eyebrow">Volgend project</span>
+            <span class="next__title">
+              {next.data.title} <span aria-hidden="true">→</span>
+            </span>
+            <span class="next__meta">
+              {next.data.client} · {next.data.year}
+            </span>
+          </div>
+          <img class="next__bg" src={next.data.thumbnail} alt="" width="1600" height="900" loading="lazy" decoding="async" />
+        </a>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .project__head {
+    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 3vw, 2rem);
+  }
+  .project__title {
+    font-size: var(--step-4);
+    margin-top: 0.4rem;
+  }
+
+  .player {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--blue);
+  }
+  .player__facade {
+    all: unset;
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .player__facade:focus-visible {
+    outline: 3px solid var(--blue-light);
+    outline-offset: -3px;
+  }
+  .player__facade img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s var(--ease-out), filter 0.4s;
+  }
+  .player__facade:hover img {
+    transform: scale(1.02);
+  }
+  .player__icon {
+    position: relative;
+    width: clamp(4rem, 9vw, 6.5rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--cream);
+    color: var(--blue);
+    transition: transform 0.4s var(--ease-out), background 0.2s;
+    box-shadow: 0 10px 40px var(--blue-60);
+  }
+  .player__facade:hover .player__icon {
+    transform: scale(1.08);
+    background: var(--blue-light);
+    color: var(--cream);
+  }
+  .player :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .project__body {
+    display: grid;
+    gap: 2.5rem;
+    padding-top: clamp(2rem, 5vw, 4rem);
+  }
+  @media (min-width: 60em) {
+    .project__body {
+      grid-template-columns: 16rem 1fr;
+      column-gap: clamp(2rem, 6vw, 6rem);
+    }
+    .credits {
+      grid-column: 2;
+    }
+  }
+  .facts {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-content: start;
+  }
+  @media (min-width: 60em) {
+    .facts {
+      grid-template-columns: 1fr;
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      grid-row: span 2;
+    }
+  }
+  .facts dt,
+  .credits dt {
+    font-size: var(--step--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .facts dd {
+    margin: 0.15rem 0 0;
+    font-weight: 500;
+    font-size: var(--step-1);
+  }
+  .prose {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    max-width: 42rem;
+  }
+  .credits h2 {
+    margin-bottom: 1rem;
+  }
+  .credits dl {
+    margin: 0;
+    border-top: 1px solid var(--blue-20);
+  }
+  .credits dl > div {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) 2fr;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--blue-20);
+  }
+  .credits dd {
+    margin: 0;
+  }
+
+  .next {
+    position: relative;
+    display: block;
+    margin-top: clamp(4rem, 10vw, 8rem);
+    color: var(--cream);
+    background: var(--blue);
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .next:hover {
+    color: var(--cream);
+  }
+  .next__inner {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: clamp(3rem, 10vw, 7rem);
+  }
+  .next__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-4);
+    line-height: 1;
+  }
+  .next__title span {
+    display: inline-block;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .next:hover .next__title span {
+    transform: translateX(0.3em);
+  }
+  .next__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.18;
+    transition: opacity 0.5s, transform 1.2s var(--ease-out);
+  }
+  .next:hover .next__bg {
+    opacity: 0.32;
+    transform: scale(1.04);
+  }
+  /* footer sluit direct aan op "volgend project" */
+  :global(main:has(.next) + .site-footer) {
+    margin-top: 0;
+    border-top: 1px solid var(--cream-20);
+  }
+</style>
+
+<script>
+  // Laad de Vimeo/YouTube-speler pas bij een klik (snel + privacyvriendelijk).
+  document.querySelectorAll<HTMLElement>('.player').forEach((player) => {
+    const btn = player.querySelector<HTMLButtonElement>('.player__facade');
+    const src = player.dataset.src;
+    if (!btn || !src) return;
+    btn.addEventListener(
+      'click',
+      () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.title = btn.getAttribute('aria-label')?.replace(/^Speel /, '').replace(/ af.*$/, '') || 'Video';
+        iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+        iframe.allowFullscreen = true;
+        player.append(iframe);
+        btn.remove();
+        iframe.focus();
+      },
+      { once: true },
+    );
+    // Warm de verbinding op zodra iemand richting de knop beweegt.
+    const warm = () => {
+      const origin = new URL(src).origin;
+      if (document.querySelector(`link[href="${origin}"]`)) return;
+      const l = document.createElement('link');
+      l.rel = 'preconnect';
+      l.href = origin;
+      document.head.append(l);
+    };
+    btn.addEventListener('pointerenter', warm, { once: true });
+    btn.addEventListener('focus', warm, { once: true });
+  });
+</script>

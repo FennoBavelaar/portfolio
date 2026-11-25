@@ -1,0 +1,176 @@
+---
+import { site } from '../lib/site';
+
+const links = [
+  { href: '/werk', label: 'Werk' },
+  { href: '/social', label: 'Social' },
+  { href: '/over-mij', label: 'Over mij' },
+  { href: '/contact', label: 'Contact' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+---
+
+<header class="site-header">
+  <div class="site-header__inner wrap">
+    <a href="/" class="logo" data-egg-name aria-label={`${site.name} — naar de homepage`}>{site.name}</a>
+
+    <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">
+      <span class="menu-toggle__label">Menu</span>
+      <span class="menu-toggle__icon" aria-hidden="true"><span></span><span></span></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Hoofdmenu">
+      <ul>
+        {
+          links.map((l, i) => (
+            <li style={`--i:${i}`}>
+              <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: color-mix(in srgb, var(--cream) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--blue-10);
+    view-transition-name: site-header;
+  }
+  .site-header__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    line-height: 1;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+  }
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+  }
+  .site-nav a {
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding-block: 0.25rem;
+  }
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .site-nav a:hover::after,
+  .site-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .menu-toggle {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    background: none;
+    border: 0;
+    padding: 0.5rem 0;
+    font-weight: 500;
+    position: relative;
+    z-index: 2;
+  }
+  .menu-toggle__icon {
+    display: grid;
+    gap: 5px;
+    width: 22px;
+  }
+  .menu-toggle__icon span {
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__icon span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__icon span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  @media (max-width: 40em) {
+    .menu-toggle {
+      display: inline-flex;
+    }
+    .site-nav {
+      position: fixed;
+      inset: 0;
+      height: 100dvh;
+      background: var(--blue);
+      color: var(--cream);
+      display: grid;
+      place-items: center start;
+      padding: calc(var(--header-h) + 1rem) var(--gutter) 2rem;
+      clip-path: inset(0 0 100% 0);
+      visibility: hidden;
+      transition: clip-path 0.55s var(--ease-out), visibility 0s 0.55s;
+    }
+    .site-nav.is-open {
+      clip-path: inset(0 0 0 0);
+      visibility: visible;
+      transition: clip-path 0.55s var(--ease-out), visibility 0s;
+    }
+    .site-nav ul {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .site-nav a {
+      font-family: var(--font-display);
+      font-size: var(--step-4);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--cream);
+    }
+    .site-nav li {
+      opacity: 0;
+      transform: translateY(1rem);
+      transition: opacity 0.4s, transform 0.5s var(--ease-out);
+    }
+    .site-nav.is-open li {
+      opacity: 1;
+      transform: none;
+      transition-delay: calc(0.12s + var(--i) * 0.06s);
+    }
+    :global(html.menu-open) .logo,
+    :global(html.menu-open) .menu-toggle {
+      color: var(--cream);
+    }
+  }
+</style>

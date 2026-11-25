@@ -1,0 +1,209 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../lib/site';
+const agent = site.agent;
+---
+
+<Base title="Contact" description={`Neem contact op met ${site.name}.`}>
+  <div class="wrap contact">
+    <h1 class="page-title">Contact</h1>
+
+    <p class="contact__intro" data-reveal>Een idee, een script of gewoon een vraag? Mail me.</p>
+
+    <div class="mail" data-reveal>
+      <button class="mail__btn" type="button" data-email={site.email} data-cursor="view" data-cursor-label="kopieer">
+        <span class="mail__address">{site.email}</span>
+        <span class="mail__hint" aria-hidden="true">klik om te kopiëren</span>
+      </button>
+      <span class="mail__confirm" aria-hidden="true">Gekopieerd! Ik zie je mail tegemoet.</span>
+      <p class="mail__alt">of <a href={`mailto:${site.email}`}>open je mailprogramma</a></p>
+      <p class="visually-hidden" aria-live="polite" id="mail-status"></p>
+    </div>
+
+    <div class="contact__grid" data-reveal-stagger>
+      <section aria-labelledby="socials-titel">
+        <h2 id="socials-titel" class="eyebrow">Socials</h2>
+        <ul class="plain">
+          {
+            site.socials.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener">
+                  {s.platform}: {s.handle} <span aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+      {
+        agent.show && (
+          <section aria-labelledby="agent-titel">
+            <h2 id="agent-titel" class="eyebrow">Agent</h2>
+            <ul class="plain">
+              {agent.name && <li>{agent.name}</li>}
+              {agent.agency && <li>{agent.agency}</li>}
+              {agent.email && (
+                <li>
+                  <a href={`mailto:${agent.email}`}>{agent.email}</a>
+                </li>
+              )}
+              {agent.phone && (
+                <li>
+                  <a href={`tel:${agent.phone.replace(/\s/g, '')}`}>{agent.phone}</a>
+                </li>
+              )}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </div>
+</Base>
+
+<style>
+  .contact__intro {
+    font-size: var(--step-1);
+    max-width: 34rem;
+  }
+  .mail {
+    position: relative;
+    margin: clamp(1.5rem, 5vw, 3rem) 0 clamp(3rem, 8vw, 5rem);
+  }
+  .mail__btn {
+    all: unset;
+    cursor: pointer;
+    display: grid;
+    gap: 0.4rem;
+    max-width: 100%;
+  }
+  .mail__btn:focus-visible {
+    outline: 2px solid var(--blue-light);
+    outline-offset: 6px;
+  }
+  .mail__address {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 8.5vw, 7rem);
+    line-height: 1;
+    word-break: break-all;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 3px no-repeat;
+    transition: background-size 0.5s var(--ease-out), color 0.2s;
+  }
+  .mail__btn:hover .mail__address {
+    background-size: 100% 3px;
+    color: var(--accent-hover);
+  }
+  .mail__hint {
+    font-size: var(--step--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .mail__confirm {
+    position: absolute;
+    left: 0;
+    top: -0.5rem;
+    translate: 0 -100%;
+    background: var(--blue);
+    color: var(--cream);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+    opacity: 0;
+    scale: 0.8;
+    transition: opacity 0.25s, scale 0.4s var(--ease-out);
+    pointer-events: none;
+  }
+  .mail.is-copied .mail__confirm {
+    opacity: 1;
+    scale: 1;
+  }
+  .mail__alt {
+    margin-top: 1rem;
+    font-size: var(--step--1);
+  }
+  .contact__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+  .contact__grid h2 {
+    margin-bottom: 0.75rem;
+  }
+  .plain {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+    font-size: var(--step-1);
+  }
+  .confetti {
+    position: fixed;
+    z-index: 60;
+    pointer-events: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--blue);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../scripts/motion';
+
+  const wrap = document.querySelector<HTMLElement>('.mail')!;
+  const btn = wrap.querySelector<HTMLButtonElement>('.mail__btn')!;
+  const status = document.getElementById('mail-status')!;
+  const address = btn.dataset.email!;
+  const messages = ['Gekopieerd! Ik zie je mail tegemoet.', 'Nog een keer gekopieerd. Voor de zekerheid.', 'Oké, hij staat er nu écht.', 'Je klembord is er klaar mee.'];
+  let n = 0;
+  let timer: number | undefined;
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(address);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = address;
+      document.body.append(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    const msg = messages[Math.min(n++, messages.length - 1)];
+    wrap.querySelector('.mail__confirm')!.textContent = msg;
+    status.textContent = msg;
+    wrap.classList.add('is-copied');
+    clearTimeout(timer);
+    timer = window.setTimeout(() => wrap.classList.remove('is-copied'), 2200);
+    burst();
+  }
+
+  // kleine "confetti" van klapper-symbolen en sterretjes
+  function burst() {
+    if (reducedMotion()) return;
+    const r = btn.querySelector('.mail__address')!.getBoundingClientRect();
+    const glyphs = ['✦', '✶', '✺', '✧', '★'];
+    for (let i = 0; i < 14; i++) {
+      const s = document.createElement('span');
+      s.className = 'confetti';
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = `${r.left + Math.random() * Math.min(r.width, 600)}px`;
+      s.style.top = `${r.top + r.height / 2}px`;
+      s.style.fontSize = `${14 + Math.random() * 18}px`;
+      document.body.append(s);
+      gsap.to(s, {
+        x: gsap.utils.random(-140, 140),
+        y: gsap.utils.random(-180, -60),
+        rotate: gsap.utils.random(-180, 180),
+        opacity: 0,
+        duration: gsap.utils.random(0.9, 1.5),
+        ease: 'power2.out',
+        onComplete: () => s.remove(),
+      });
+    }
+  }
+
+  btn.addEventListener('click', copy);
+</script>

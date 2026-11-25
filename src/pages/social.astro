@@ -1,0 +1,748 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSocial } from '../lib/projects';
+import { site } from '../lib/site';
+
+const items = await getSocial();
+const handle = site.socials.find((s) => s.platform.toLowerCase() === 'instagram') ?? site.socials[0];
+const PLATFORM: Record<string, string> = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube' };
+const fmt = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Base title="Social" description={`Korte video's van ${site.name}, in een eindeloze feed.`} noSmoothScroll hideFooter bodyClass="page-social">
+  <h1 class="visually-hidden">Social</h1>
+  <div class="social" data-mode="feed">
+    <div class="social__switch" role="group" aria-label="Weergave">
+      <button type="button" class="social__mode" data-mode-btn="feed" aria-pressed="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"></path></svg>
+        <span>Feed</span>
+      </button>
+      <button type="button" class="social__mode" data-mode-btn="grid" aria-pressed="false">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 3h5v5H3zM9.5 3h5v5h-5zM16 3h5v5h-5zM3 9.5h5v5H3zM9.5 9.5h5v5h-5zM16 9.5h5v5h-5zM3 16h5v5H3zM9.5 16h5v5h-5zM16 16h5v5h-5z" fill="currentColor"></path></svg>
+        <span>Grid</span>
+      </button>
+    </div>
+
+    <!-- ============ FEED ============ -->
+    <div class="stage">
+      <button class="stage__nav stage__nav--up" type="button" aria-label="Vorige video">↑</button>
+      <div class="phone">
+        <div class="feed" tabindex="0" role="region" aria-roledescription="videofeed" aria-label="Video's. Gebruik de pijltjestoetsen om te bladeren, M voor geluid." data-lenis-prevent>
+          {
+            items.map((item, i) => (
+              <article class="reel" data-index={i} data-id={item.id} aria-label={`Video ${i + 1} van ${items.length}`}>
+                <video
+                  class="reel__video"
+                  data-src={item.data.videoSrc}
+                  poster={item.data.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  aria-hidden="true"
+                />
+                <div class="reel__tap" data-cursor="sound" data-cursor-label="geluid aan" aria-hidden="true" />
+                <div class="reel__flash" aria-hidden="true" />
+                <div class="reel__paused" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+                </div>
+
+                <div class="reel__side">
+                  <button class="reel__btn reel__like" type="button" aria-pressed="false" aria-label="Vind ik leuk">
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-9.4-9.3C1.2 8.2 3.4 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.6 0 5.8 3.7 4.4 7.2C19.5 16.4 12 21 12 21z" />
+                    </svg>
+                  </button>
+                  <button class="reel__btn reel__mute" type="button" aria-pressed="true" aria-label="Geluid aanzetten">
+                    <svg class="icon-muted" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                      <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" />
+                      <path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <svg class="icon-sound" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                      <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" />
+                      <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                  </button>
+                  <a class="reel__btn" href={item.data.link} target="_blank" rel="noopener" aria-label={`Bekijk origineel op ${PLATFORM[item.data.platform]}`}>
+                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </div>
+
+                <div class="reel__caption">
+                  <p class="reel__handle">{handle?.handle}</p>
+                  <p class="reel__text">{item.data.caption}</p>
+                  <p class="reel__meta">
+                    <time datetime={item.data.date.toISOString().slice(0, 10)}>{fmt.format(item.data.date)}</time> ·{' '}
+                    <a href={item.data.link} target="_blank" rel="noopener">
+                      {PLATFORM[item.data.platform]} ↗
+                    </a>
+                  </p>
+                </div>
+                <div class="reel__progress" aria-hidden="true">
+                  <span />
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+      <button class="stage__nav stage__nav--down" type="button" aria-label="Volgende video">↓</button>
+      <p class="stage__hint" aria-hidden="true">↑ ↓ bladeren · M geluid · dubbelklik ♥</p>
+    </div>
+
+    <!-- ============ PROFIEL-GRID ============ -->
+    <section class="profile wrap" aria-label="Profiel">
+      <header class="profile__head">
+        <span class="profile__avatar" aria-hidden="true">{site.name.charAt(0)}</span>
+        <div>
+          <p class="profile__name">{site.name}</p>
+          {handle && <a class="profile__handle" href={handle.url} target="_blank" rel="noopener">{handle.handle} ↗</a>}
+          <p class="profile__count">{items.length} video's</p>
+        </div>
+      </header>
+      <ul class="profile__grid">
+        {
+          items.map((item, i) => (
+            <li>
+              <button type="button" class="profile__tile" data-open={i} data-cursor="play" aria-label={`Open video ${i + 1}: ${item.data.caption}`}>
+                <img src={item.data.poster} alt="" width="540" height="960" loading="lazy" decoding="async" />
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                </svg>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  :global(body.page-social) {
+    --feed-h: calc(100svh - var(--header-h));
+  }
+  .social {
+    position: relative;
+  }
+  .social[data-mode='feed'] .profile,
+  .social[data-mode='grid'] .stage {
+    display: none;
+  }
+
+  /* -------- Weergave-schakelaar -------- */
+  .social__switch {
+    position: absolute;
+    z-index: 20;
+    top: 0.75rem;
+    left: 50%;
+    translate: -50% 0;
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--blue) 55%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .social[data-mode='grid'] .social__switch {
+    position: sticky;
+    top: calc(var(--header-h) + 0.75rem);
+    width: max-content;
+    left: auto;
+    translate: none;
+    margin: 0.75rem auto 0;
+    background: var(--blue);
+  }
+  .social__mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    background: transparent;
+    color: var(--cream);
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+  .social__mode[aria-pressed='true'] {
+    background: var(--cream);
+    color: var(--blue);
+  }
+  .social__mode:not([aria-pressed='true']):hover {
+    background: var(--blue-light);
+  }
+
+  /* -------- Feed -------- */
+  .stage {
+    position: relative;
+    height: var(--feed-h);
+    display: grid;
+    place-items: center;
+  }
+  .phone {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--blue);
+    overflow: hidden;
+  }
+  .feed {
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+  }
+  .feed::-webkit-scrollbar {
+    display: none;
+  }
+  .feed:focus-visible {
+    outline: 3px solid var(--blue-light);
+    outline-offset: -3px;
+  }
+  .reel {
+    position: relative;
+    height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    overflow: hidden;
+    background: var(--blue);
+    color: var(--cream);
+  }
+  .reel__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .reel__tap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .reel__caption {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5rem 4.5rem 1.4rem 1rem;
+    background: linear-gradient(to top, color-mix(in srgb, var(--blue) 85%, transparent), transparent);
+    pointer-events: none;
+  }
+  .reel__caption a {
+    pointer-events: auto;
+  }
+  .reel__caption p {
+    margin: 0 0 0.25rem;
+  }
+  .reel__handle {
+    font-weight: 600;
+  }
+  .reel__text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .reel__meta {
+    font-size: 0.78rem;
+    opacity: 0.85;
+  }
+  .reel__meta a:hover {
+    color: var(--cream);
+  }
+  .reel__side {
+    position: absolute;
+    z-index: 2;
+    right: 0.6rem;
+    bottom: 1.6rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .reel__btn {
+    width: 2.9rem;
+    height: 2.9rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 0;
+    background: color-mix(in srgb, var(--blue) 78%, transparent);
+    color: var(--cream);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .reel__btn:hover {
+    background: var(--blue-light);
+    color: var(--cream);
+  }
+  .reel__btn:active {
+    transform: scale(0.9);
+  }
+  .reel__like path {
+    fill: transparent;
+    stroke: var(--cream);
+    stroke-width: 1.8;
+    transition: fill 0.2s;
+  }
+  .reel__like[aria-pressed='true'] {
+    background: var(--cream);
+  }
+  .reel__like[aria-pressed='true'] path {
+    fill: var(--blue);
+    stroke: var(--blue);
+  }
+  .reel__mute .icon-sound,
+  .reel__mute[aria-pressed='false'] .icon-muted {
+    display: none;
+  }
+  .reel__mute[aria-pressed='false'] .icon-sound {
+    display: block;
+  }
+  .reel__progress {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--cream-20);
+  }
+  .reel__progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--cream);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .reel__flash,
+  .reel__paused {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--blue) 70%, transparent);
+    color: var(--cream);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .reel.is-paused .reel__paused {
+    opacity: 1;
+  }
+  :global(.reel-heart) {
+    position: absolute;
+    z-index: 4;
+    width: 6.5rem;
+    height: 6.5rem;
+    margin: -3.25rem 0 0 -3.25rem;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 14px color-mix(in srgb, var(--blue) 50%, transparent));
+  }
+
+  .stage__nav,
+  .stage__hint {
+    display: none;
+  }
+
+  @media (min-width: 48em) {
+    .stage {
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      padding-block: 1rem;
+    }
+    .phone {
+      grid-column: 2;
+      grid-row: 1;
+      height: min(100%, 52rem);
+      width: auto;
+      aspect-ratio: 9 / 16;
+      border-radius: 1.75rem;
+      box-shadow:
+        0 0 0 8px var(--blue),
+        0 0 0 9px var(--blue-20),
+        0 30px 80px var(--blue-20);
+    }
+    .social__switch {
+      top: 1.75rem;
+    }
+    .stage__nav {
+      display: grid;
+      place-items: center;
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: start;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: 1.5px solid var(--blue);
+      background: transparent;
+      color: var(--blue);
+      font-size: 1.2rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .stage__nav:hover {
+      background: var(--blue-light);
+      border-color: var(--blue-light);
+      color: var(--cream);
+    }
+    .stage__nav--up {
+      align-self: center;
+      translate: 0 -2rem;
+    }
+    .stage__nav--down {
+      align-self: center;
+      translate: 0 2rem;
+    }
+    .stage__hint {
+      display: block;
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: end;
+      align-self: end;
+      margin: 0 0 2rem;
+      font-size: var(--step--1);
+      opacity: 0.75;
+      writing-mode: vertical-rl;
+      rotate: 180deg;
+    }
+  }
+
+  /* -------- Profiel-grid -------- */
+  .profile {
+    max-width: 58rem;
+    padding-top: 1.5rem;
+    padding-bottom: 4rem;
+  }
+  .profile__head {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 2.5rem);
+    padding: 1.5rem 0 2rem;
+  }
+  .profile__avatar {
+    flex: none;
+    width: clamp(4.5rem, 16vw, 8.5rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--blue);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 8vw, 4rem);
+    box-shadow: 0 0 0 3px var(--cream), 0 0 0 5px var(--blue);
+  }
+  .profile__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--step-2);
+    margin: 0;
+    line-height: 1.1;
+  }
+  .profile__handle {
+    font-weight: 500;
+  }
+  .profile__count {
+    margin: 0.3rem 0 0;
+    font-size: var(--step--1);
+  }
+  .profile__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  .profile__tile {
+    all: unset;
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--blue);
+  }
+  .profile__tile:focus-visible {
+    outline: 3px solid var(--blue-light);
+    outline-offset: -3px;
+  }
+  .profile__tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-out), opacity 0.3s;
+  }
+  .profile__tile:hover img {
+    transform: scale(1.05);
+    opacity: 0.85;
+  }
+  .profile__tile svg {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: var(--cream);
+    filter: drop-shadow(0 1px 3px var(--blue-60));
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { reducedMotion } from '../scripts/motion';
+
+  const root = document.querySelector<HTMLElement>('.social')!;
+  const feed = root.querySelector<HTMLElement>('.feed')!;
+  const reels = [...feed.querySelectorAll<HTMLElement>('.reel')];
+  const videos = reels.map((r) => r.querySelector<HTMLVideoElement>('video')!);
+  const rm = reducedMotion();
+
+  let muted = true;
+  let active = -1;
+  let raf = 0;
+
+  // ---------- Likes (onthouden in deze browser) ----------
+  const likeKey = 'social-likes';
+  const likes = new Set<string>(
+    (() => {
+      try {
+        return JSON.parse(localStorage.getItem(likeKey) || '[]');
+      } catch {
+        return [];
+      }
+    })(),
+  );
+  const saveLikes = () => {
+    try {
+      localStorage.setItem(likeKey, JSON.stringify([...likes]));
+    } catch {}
+  };
+  reels.forEach((r) => {
+    const btn = r.querySelector<HTMLButtonElement>('.reel__like')!;
+    btn.setAttribute('aria-pressed', String(likes.has(r.dataset.id!)));
+    btn.addEventListener('click', () => setLike(r, btn.getAttribute('aria-pressed') !== 'true'));
+  });
+  function setLike(reel: HTMLElement, on: boolean) {
+    const btn = reel.querySelector<HTMLButtonElement>('.reel__like')!;
+    btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? 'Vind ik niet meer leuk' : 'Vind ik leuk');
+    on ? likes.add(reel.dataset.id!) : likes.delete(reel.dataset.id!);
+    saveLikes();
+    if (on && !rm) gsap.fromTo(btn, { scale: 0.7 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' });
+  }
+
+  // ---------- Laden: alleen de zichtbare video en z'n buren ----------
+  const load = (i: number) => {
+    const v = videos[i];
+    if (v && !v.src) {
+      v.src = v.dataset.src!;
+      v.preload = 'auto';
+    }
+  };
+
+  // ---------- Afspelen ----------
+  function activate(i: number) {
+    if (i === active) return;
+    active = i;
+    videos.forEach((v, j) => {
+      if (j !== i && !v.paused) v.pause();
+    });
+    load(i);
+    load(i + 1);
+    const v = videos[i];
+    v.currentTime = 0;
+    v.muted = muted;
+    if (!rm) play(i);
+    else reels[i].classList.add('is-paused');
+    tick();
+  }
+
+  function play(i: number) {
+    const v = videos[i];
+    reels[i].classList.remove('is-paused');
+    v.play().catch(() => {
+      // Browser blokkeert afspelen met geluid → probeer zonder geluid.
+      if (!v.muted) {
+        setMuted(true);
+        v.play().catch(() => reels[i].classList.add('is-paused'));
+      } else reels[i].classList.add('is-paused');
+    });
+  }
+
+  function tick() {
+    cancelAnimationFrame(raf);
+    const loop = () => {
+      const v = videos[active];
+      const bar = reels[active]?.querySelector<HTMLElement>('.reel__progress span');
+      if (v && bar && v.duration) bar.style.transform = `scaleX(${v.currentTime / v.duration})`;
+      raf = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const i = Number((e.target as HTMLElement).dataset.index);
+        if (e.intersectionRatio >= 0.6) activate(i);
+        else if (e.intersectionRatio < 0.6 && i === active) videos[i].pause();
+      }
+    },
+    { root: feed, threshold: [0, 0.6] },
+  );
+  reels.forEach((r) => io.observe(r));
+
+  // ---------- Geluid ----------
+  function setMuted(m: boolean) {
+    muted = m;
+    videos.forEach((v) => (v.muted = m));
+    reels.forEach((r) => {
+      const b = r.querySelector<HTMLButtonElement>('.reel__mute')!;
+      b.setAttribute('aria-pressed', String(m));
+      b.setAttribute('aria-label', m ? 'Geluid aanzetten' : 'Geluid uitzetten');
+      r.querySelector<HTMLElement>('.reel__tap')!.dataset.cursorLabel = m ? 'geluid aan' : 'geluid uit';
+    });
+    document.dispatchEvent(new Event('cursor:refresh'));
+  }
+  function toggleMute(showFlash = true) {
+    setMuted(!muted);
+    if (!muted && active >= 0 && videos[active].paused && !rm) play(active);
+    if (showFlash && active >= 0) flash(reels[active]);
+  }
+  function flash(reel: HTMLElement) {
+    const el = reel.querySelector<HTMLElement>('.reel__flash')!;
+    el.innerHTML = reel.querySelector('.reel__mute')!.innerHTML;
+    el.querySelectorAll('svg').forEach((s) => s.setAttribute('width', '30'));
+    gsap.fromTo(el, { opacity: 1, scale: rm ? 1 : 0.8 }, { opacity: 0, scale: 1, duration: 0.9, delay: 0.25, ease: 'power2.in' });
+  }
+  reels.forEach((r) => r.querySelector('.reel__mute')!.addEventListener('click', () => toggleMute(false)));
+
+  // ---------- Tikken: 1x = geluid (of play/pauze bij minder beweging), 2x = hartje ----------
+  const HEART =
+    '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 21s-7.5-4.6-9.4-9.3C1.2 8.2 3.4 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.6 0 5.8 3.7 4.4 7.2C19.5 16.4 12 21 12 21z" fill="#1b2e5a" stroke="#f3eee3" stroke-width="1.2"/></svg>';
+  let lastTap = 0;
+  let singleTimer: number | undefined;
+
+  reels.forEach((reel, i) => {
+    const tap = reel.querySelector<HTMLElement>('.reel__tap')!;
+    tap.addEventListener('click', (e) => {
+      const now = performance.now();
+      if (now - lastTap < 300) {
+        clearTimeout(singleTimer);
+        lastTap = 0;
+        heart(reel, e.clientX, e.clientY);
+        setLike(reel, true);
+        return;
+      }
+      lastTap = now;
+      singleTimer = window.setTimeout(() => {
+        if (rm) {
+          const v = videos[i];
+          v.paused ? play(i) : (v.pause(), reel.classList.add('is-paused'));
+        } else toggleMute();
+      }, 300);
+    });
+  });
+
+  function heart(reel: HTMLElement, x: number, y: number) {
+    const r = reel.getBoundingClientRect();
+    const h = document.createElement('div');
+    h.className = 'reel-heart';
+    h.innerHTML = HEART;
+    h.style.left = `${x - r.left}px`;
+    h.style.top = `${y - r.top}px`;
+    reel.append(h);
+    if (rm) {
+      gsap.fromTo(h, { opacity: 1 }, { opacity: 0, duration: 0.3, delay: 0.6, onComplete: () => h.remove() });
+      return;
+    }
+    gsap
+      .timeline({ onComplete: () => h.remove() })
+      .fromTo(h, { scale: 0, rotate: gsap.utils.random(-25, 25) }, { scale: 1.15, duration: 0.25, ease: 'back.out(3)' })
+      .to(h, { scale: 1, duration: 0.12 })
+      .to(h, { y: -110, opacity: 0, scale: 0.7, duration: 0.65, ease: 'power2.in', delay: 0.25 });
+    // kleine mini-hartjes eromheen
+    for (let k = 0; k < 6; k++) {
+      const s = document.createElement('div');
+      s.className = 'reel-heart';
+      s.innerHTML = HEART;
+      Object.assign(s.style, { left: h.style.left, top: h.style.top, width: '1.4rem', height: '1.4rem', margin: '-0.7rem 0 0 -0.7rem' });
+      reel.append(s);
+      const a = (Math.PI * 2 * k) / 6;
+      gsap.fromTo(
+        s,
+        { scale: 0, x: 0, y: 0 },
+        { scale: 1, x: Math.cos(a) * 80, y: Math.sin(a) * 80, opacity: 0, duration: 0.8, ease: 'expo.out', onComplete: () => s.remove() },
+      );
+    }
+  }
+
+  // ---------- Navigatie ----------
+  const go = (i: number) => {
+    const target = Math.max(0, Math.min(reels.length - 1, i));
+    feed.scrollTo({ top: reels[target].offsetTop, behavior: rm ? 'auto' : 'smooth' });
+  };
+  const current = () => Math.round(feed.scrollTop / feed.clientHeight);
+  document.querySelector('.stage__nav--up')!.addEventListener('click', () => go(current() - 1));
+  document.querySelector('.stage__nav--down')!.addEventListener('click', () => go(current() + 1));
+
+  window.addEventListener('keydown', (e) => {
+    if (root.dataset.mode !== 'feed' || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target as HTMLElement;
+    if (/^(INPUT|TEXTAREA)$/.test(t.tagName)) return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      go(current() + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      go(current() - 1);
+    } else if (e.key.toLowerCase() === 'm') {
+      toggleMute();
+    }
+  });
+
+  // ---------- Feed ↔ grid ----------
+  const modeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-mode-btn]')];
+  let lastIndex = 0;
+  function setMode(mode: 'feed' | 'grid', openAt?: number) {
+    if (mode === root.dataset.mode && openAt === undefined) return;
+    if (mode === 'grid' && active >= 0) lastIndex = active;
+    root.dataset.mode = mode;
+    modeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.modeBtn === mode)));
+    if (mode === 'grid') {
+      videos.forEach((v) => v.pause());
+      cancelAnimationFrame(raf);
+      active = -1;
+      window.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, 0);
+      const i = openAt ?? lastIndex;
+      feed.scrollTo({ top: reels[i].offsetTop, behavior: 'instant' as ScrollBehavior });
+      active = -1;
+      requestAnimationFrame(() => activate(i));
+      feed.focus({ preventScroll: true });
+    }
+  }
+  modeBtns.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.modeBtn as 'feed' | 'grid')));
+  root.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((b) => b.addEventListener('click', () => setMode('feed', Number(b.dataset.open))));
+
+  // Pauzeer als het tabblad verborgen is
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) videos.forEach((v) => v.pause());
+    else if (active >= 0 && !rm && root.dataset.mode === 'feed') play(active);
+  });
+</script>

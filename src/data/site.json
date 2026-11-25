@@ -1,0 +1,23 @@
+{
+  "name": "FENNO",
+  "role": "Regisseur",
+  "email": "info@fenfilms.nl",
+  "socials": [
+    {
+      "platform": "Instagram",
+      "handle": "@fennobavelaar",
+      "url": "https://www.instagram.com/fennobavelaar/"
+    }
+  ],
+  "showreel": {
+    "video": "/media/showreel/showreel.mp4",
+    "poster": "/media/showreel/showreel-poster.webp"
+  },
+  "agent": {
+    "show": false,
+    "name": "",
+    "agency": "",
+    "email": "",
+    "phone": ""
+  }
+}

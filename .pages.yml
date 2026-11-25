@@ -1,0 +1,182 @@
+# Configuratie voor Pages CMS (https://pagescms.org)
+# Hiermee bewerk je projecten, social video's en site-instellingen via een formulier in de browser.
+
+media:
+  input: public/media
+  output: /media
+  categories: [image, video]
+
+content:
+  - name: projects
+    label: Projecten
+    type: collection
+    path: src/content/projects
+    filename: "{fields.slug}.md"
+    view:
+      fields: [title, client, year, type, featured]
+      primary: title
+      sort: [order, year, title]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        label: Titel
+        type: string
+        required: true
+      - name: slug
+        label: Slug (webadres)
+        description: "Alleen kleine letters, cijfers en streepjes, bijv. nike-zomer-2025. Wordt /werk/<slug>."
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: "Alleen kleine letters, cijfers en streepjes."
+      - name: client
+        label: Klant
+        type: string
+        required: true
+      - name: year
+        label: Jaar
+        type: number
+        required: true
+      - name: role
+        label: Rol
+        description: "Bijv. regie of regie + script"
+        type: string
+        required: true
+        default: regie
+      - name: type
+        label: Type
+        type: select
+        required: true
+        options:
+          values:
+            - { value: commercial, label: Commercial }
+            - { value: videoclip, label: Videoclip }
+            - { value: short film, label: Short film }
+            - { value: branded, label: Branded }
+            - { value: documentaire, label: Documentaire }
+      - name: thumbnail
+        label: Thumbnail (afbeelding, liefst 1600×900)
+        type: image
+        required: true
+        options:
+          path: public/media/projects
+          extensions: [jpg, jpeg, png, webp, avif]
+      - name: previewVideo
+        label: Preview-loop (korte mp4 van een paar seconden, zonder geluid)
+        type: file
+        options:
+          path: public/media/projects
+          extensions: [mp4, webm]
+      - name: videoEmbed
+        label: Video-link (Vimeo of YouTube)
+        type: string
+        required: true
+      - name: credits
+        label: Credits
+        type: object
+        list: true
+        fields:
+          - { name: role, label: Rol, type: string, required: true }
+          - { name: name, label: Naam, type: string, required: true }
+      - name: featured
+        label: Uitgelicht op de homepage
+        type: boolean
+        default: false
+      - name: order
+        label: Volgorde (lager = eerder)
+        type: number
+        default: 100
+      - name: body
+        label: Beschrijving
+        type: rich-text
+
+  - name: social
+    label: Social video's
+    type: collection
+    path: src/content/social
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [caption, date, platform]
+      primary: caption
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: videoSrc
+        label: Video (verticaal 9:16, mp4)
+        type: file
+        required: true
+        options:
+          path: public/media/social
+          extensions: [mp4, webm, mov]
+      - name: poster
+        label: Poster (stilstaand beeld, 9:16)
+        type: image
+        required: true
+        options:
+          path: public/media/social
+          extensions: [jpg, jpeg, png, webp]
+      - name: caption
+        label: Caption
+        type: text
+        required: true
+      - name: platform
+        label: Platform
+        type: select
+        required: true
+        default: instagram
+        options:
+          values:
+            - { value: instagram, label: Instagram }
+            - { value: tiktok, label: TikTok }
+            - { value: youtube, label: YouTube }
+      - name: date
+        label: Datum
+        type: date
+        required: true
+      - name: link
+        label: Link naar de originele post
+        type: string
+        required: true
+
+  - name: site
+    label: Site-instellingen
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - { name: name, label: Naam, type: string, required: true }
+      - { name: role, label: Functie, type: string }
+      - { name: email, label: E-mail, type: string, required: true }
+      - name: socials
+        label: Socials
+        type: object
+        list: true
+        fields:
+          - { name: platform, label: Platform, type: string }
+          - { name: handle, label: Gebruikersnaam, type: string }
+          - { name: url, label: Link, type: string }
+      - name: showreel
+        label: Showreel (homepage)
+        type: object
+        fields:
+          - name: video
+            label: Video (mp4, liefst 1920×1080, met geluid)
+            type: file
+            options: { path: public/media/showreel, extensions: [mp4, webm] }
+          - name: poster
+            label: Poster
+            type: image
+            options: { path: public/media/showreel }
+      - name: agent
+        label: Agent
+        type: object
+        fields:
+          - { name: show, label: Toon agent op contactpagina, type: boolean }
+          - { name: name, label: Naam, type: string }
+          - { name: agency, label: Bureau, type: string }
+          - { name: email, label: E-mail, type: string }
+          - { name: phone, label: Telefoon, type: string }

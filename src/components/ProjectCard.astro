@@ -1,0 +1,108 @@
+---
+import type { Project } from '../lib/projects';
+import { TYPE_LABELS, typeKey } from '../lib/projects';
+
+interface Props {
+  project: Project;
+  eager?: boolean;
+  size?: 'normal' | 'large';
+  headingLevel?: 'h2' | 'h3';
+}
+const { project, eager = false, size = 'normal', headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const { data } = project;
+---
+
+<article class:list={['card', `card--${size}`]} data-type={typeKey(data.type)} data-preview>
+  <a href={`/werk/${data.slug}`} class="card__link" data-cursor="view">
+    <figure class="card__media">
+      <img
+        src={data.thumbnail}
+        alt=""
+        width="1600"
+        height="900"
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchpriority={eager ? 'high' : 'auto'}
+      />
+      {
+        data.previewVideo && (
+          <video data-src={data.previewVideo} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" />
+        )
+      }
+    </figure>
+    <div class="card__meta">
+      <Heading class="card__title">{data.title}</Heading>
+      <p class="card__sub">
+        <span>{data.client}</span>
+        <span aria-hidden="true">·</span>
+        <span>{data.year}</span>
+        <span class="card__type">{TYPE_LABELS[data.type]}</span>
+      </p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card__link:hover {
+    color: inherit;
+  }
+  .card__media {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--blue-10);
+  }
+  .card__media img,
+  .card__media video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out), opacity 0.4s;
+  }
+  .card__media video {
+    opacity: 0;
+  }
+  :global(.is-playing) .card__media video {
+    opacity: 1;
+  }
+  .card__link:hover .card__media img,
+  .card__link:hover .card__media video {
+    transform: scale(1.035);
+  }
+  .card__meta {
+    padding-top: 0.85rem;
+  }
+  .card__title {
+    font-size: var(--step-2);
+    transition: color 0.2s;
+  }
+  .card__link:hover .card__title {
+    color: var(--accent-hover);
+  }
+  .card__sub {
+    margin: 0.35rem 0 0;
+    font-size: var(--step--1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .card__type {
+    margin-left: auto;
+    border: 1px solid var(--blue-20);
+    border-radius: 999px;
+    padding: 0.05rem 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+</style>

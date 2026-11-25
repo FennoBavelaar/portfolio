@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Eruit geknipt" description="Deze pagina bestaat niet (meer).">
+  <div class="wrap notfound">
+    <p class="eyebrow">Fout 404 · Scène ontbreekt</p>
+    <h1>Deze scène is eruit geknipt.</h1>
+    <p>Ligt waarschijnlijk ergens op de vloer van de montagekamer. Probeer het werkoverzicht eens.</p>
+    <p><a class="btn" href="/werk">Naar het werk <span aria-hidden="true">→</span></a></p>
+  </div>
+</Base>
+
+<style>
+  .notfound {
+    padding-block: clamp(4rem, 14vw, 10rem);
+  }
+  .notfound h1 {
+    font-size: var(--step-4);
+    margin: 0.5rem 0 1.5rem;
+    max-width: 14ch;
+  }
+</style>
