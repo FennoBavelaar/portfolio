@@ -1,28 +1,24 @@
 ---
-title: "Placeholder Eén"
-slug: "placeholder-een"
-client: "[Klant A]"
-year: 2025
-role: "regie + script"
-type: "commercial"
-thumbnail: "/media/projects/project-01.webp"
-previewVideo: "/media/projects/project-01-preview.mp4"
-videoEmbed: "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
+title: Lagocello
+slug: lagocello
+client: "[LagoLago]"
+year: 2026
+role: regie + script
+type: commercial
+thumbnail: /media/projects/Thumb lago.jpg
+videoEmbed: https://vimeo.com/1249994386?share=copy&fl=sv&fe=ci
 credits:
-  - role: "Regie"
-    name: "[FENNO]"
-  - role: "Director of Photography"
-    name: "[Naam]"
-  - role: "Productie"
-    name: "[Productiehuis]"
-  - role: "Montage"
-    name: "[Naam]"
-  - role: "Muziek"
-    name: "[Naam]"
+  - role: Creatie + Regie + Camera
+    name: "[FENNO BAVELAAR]"
+  - role: Gaffer
+    name: "[RENS REICHARD]"
+  - role: Productie
+    name: "[KAYLEE SWIERS]"
+  - role: Edit
+    name: "[MATTIJN SMIT]"
 featured: true
 order: 1
 ---
+Een excentrieke Italiaanse man beschrijft op (on)gepaste wijze zijn volwaardige liefde voor *Lagocello*.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Dit is een dummy-beschrijving: vervang deze tekst door het verhaal achter het project.
-
-Cras mattis consectetur purus sit amet fermentum. Vestibulum id ligula porta felis euismod semper. Nulla vitae elit libero, a pharetra augue.
+Het festival LagoLago lanceerde in 2026, in samenwerking met *Bongiorno*, hun eigen Limoncello merk. Met de vurige Italiaanse cultuur als munitie, kreeg deze video al snel een erotisch randje vol *passione*. Ook leuk: de voice-over is ingesproken door de eigenaar van *Bongiorno*, Vincenzo Bongiorno (ja, zo heet hij echt).
