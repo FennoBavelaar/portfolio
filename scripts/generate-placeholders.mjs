@@ -67,16 +67,7 @@ function still({ file, w, h, expr, label, sub, t = 0.8 }) {
   ff(['-f', 'lavfi', '-i', `color=c=black:s=${w}x${h}:d=1`, '-vf', vf, '-frames:v', '1', '-c:v', 'libwebp', '-quality', '72', file]);
 }
 
-for (const d of ['projects', 'social', 'showreel']) mkdirSync(out(d), { recursive: true });
-
-// Showreel: wisselt elke 2 seconden van patroon
-const reelExpr = patterns
-  .slice(0, 4)
-  .map((p, i) => `eq(mod(floor(T/2),4),${i})*${p}`)
-  .join('+');
-console.log('→ showreel');
-video({ file: out('showreel/showreel.mp4'), w: 1280, h: 720, dur: 8, expr: reelExpr, label: 'SHOWREEL', sub: 'placeholder · vervang mij', audioHz: 220 });
-still({ file: out('showreel/showreel-poster.webp'), w: 1600, h: 900, expr: patterns[0], label: 'SHOWREEL', sub: 'placeholder' });
+for (const d of ['projects', 'social']) mkdirSync(out(d), { recursive: true });
 
 // 6 projecten
 for (let i = 1; i <= 6; i++) {

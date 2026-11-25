@@ -15,10 +15,6 @@ const schema = z.object({
       }),
     )
     .default([]),
-  showreel: z.object({
-    video: z.string().min(1, 'site.json: "showreel.video" ontbreekt.'),
-    poster: z.string().min(1, 'site.json: "showreel.poster" ontbreekt.'),
-  }),
   agent: z
     .object({
       show: z.boolean().default(false),

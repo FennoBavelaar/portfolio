@@ -13,7 +13,7 @@ content:
     path: src/content/projects
     filename: "{fields.slug}.md"
     view:
-      fields: [title, client, year, type, featured]
+      fields: [title, client, year, type]
       primary: title
       sort: [order, year, title]
       default:
@@ -26,7 +26,7 @@ content:
         required: true
       - name: slug
         label: Slug (webadres)
-        description: "Alleen kleine letters, cijfers en streepjes, bijv. nike-zomer-2025. Wordt /werk/<slug>."
+        description: "Alleen kleine letters, cijfers en streepjes, bijv. nike-zomer-2025. Wordt /portfolio/<slug>."
         type: string
         required: true
         pattern:
@@ -81,10 +81,6 @@ content:
         fields:
           - { name: role, label: Rol, type: string, required: true }
           - { name: name, label: Naam, type: string, required: true }
-      - name: featured
-        label: Uitgelicht op de homepage
-        type: boolean
-        default: false
       - name: order
         label: Volgorde (lager = eerder)
         type: number
@@ -168,18 +164,6 @@ content:
           - { name: platform, label: Platform, type: string }
           - { name: handle, label: Gebruikersnaam, type: string }
           - { name: url, label: Link, type: string }
-      - name: showreel
-        label: Showreel (homepage)
-        type: object
-        fields:
-          - name: video
-            label: Video (mp4, liefst 1920×1080, met geluid)
-            type: file
-            options: { path: public/media/showreel, extensions: [mp4, webm] }
-          - name: poster
-            label: Poster
-            type: image
-            options: { path: public/media/showreel }
       - name: agent
         label: Agent
         type: object

@@ -19,7 +19,6 @@ credits:
     name: "[Naam]"
   - role: "Muziek"
     name: "[Naam]"
-featured: false
 order: 6
 ---
 

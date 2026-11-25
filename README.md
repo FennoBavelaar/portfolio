@@ -12,7 +12,7 @@ Je hoeft geen code te kunnen om de site bij te houden. Projecten en social video
 2. [Eenmalig: de CMS koppelen](#eenmalig-de-cms-koppelen)
 3. [Zo voeg je een project toe](#zo-voeg-je-een-project-toe)
 4. [Zo voeg je een social video toe](#zo-voeg-je-een-social-video-toe)
-5. [Naam, e-mail, showreel en agent aanpassen](#naam-e-mail-showreel-en-agent-aanpassen)
+5. [Naam, e-mail en agent aanpassen](#naam-e-mail-en-agent-aanpassen)
 6. [Als er iets misgaat](#als-er-iets-misgaat)
 7. [Tips voor je media](#tips-voor-je-media)
 8. [Voor wie wél in de code duikt](#voor-wie-wel-in-de-code-duikt)
@@ -55,7 +55,7 @@ Dat is alles. Alles wat je in de CMS opslaat, komt in je repository terecht. Net
    | Veld | Wat vul je in? | Voorbeeld |
    |---|---|---|
    | **Titel** | De naam van het project | `Zomer aan zee` |
-   | **Slug** | Het stukje van het webadres. Alleen kleine letters, cijfers en streepjes. | `zomer-aan-zee` (wordt `/werk/zomer-aan-zee`) |
+   | **Slug** | Het stukje van het webadres. Alleen kleine letters, cijfers en streepjes. | `zomer-aan-zee` (wordt `/portfolio/zomer-aan-zee`) |
    | **Klant** | Voor wie je het maakte | `Merknaam` |
    | **Jaar** | Het jaar | `2025` |
    | **Rol** | Wat je deed | `regie` of `regie + script` |
@@ -64,14 +64,13 @@ Dat is alles. Alles wat je in de CMS opslaat, komt in je repository terecht. Net
    | **Preview-loop** | Optioneel: een korte mp4 van een paar seconden zonder geluid. Die speelt af als iemand met de muis over het project gaat. | |
    | **Video-link** | De link naar je video op Vimeo of YouTube | `https://vimeo.com/123456789` |
    | **Credits** | Klik op **Add** voor elke regel: een rol en een naam | `Director of Photography` / `Naam` |
-   | **Uitgelicht** | Aanzetten als het project op de homepage moet staan | |
    | **Volgorde** | Een getal: hoe lager, hoe eerder het project in de lijst staat | `1` |
    | **Beschrijving** | Vrije tekst over het project | |
 
 5. Klik op **Save**.
 6. Wacht 1 à 2 minuten en ververs je website. Klaar!
 
-> **Een project weghalen?** Open het in de CMS en klik op **Delete**. Je kunt ook "Uitgelicht" uitzetten als het alleen van de homepage af moet.
+> **Een project weghalen?** Open het in de CMS en klik op **Delete**.
 
 ### Handmatig (via de GitHub-website)
 
@@ -98,7 +97,6 @@ Gebruik dit als je de CMS niet wilt gebruiken.
        name: "Naam"
      - role: "Montage"
        name: "Naam"
-   featured: true
    order: 1
    ---
 
@@ -110,7 +108,6 @@ Gebruik dit als je de CMS niet wilt gebruiken.
 5. Let op deze punten:
    - Bovenaan en onderaan het blok staan precies drie streepjes: `---`.
    - `type` moet exact één van deze zijn: `commercial`, `videoclip`, `short film`, `branded`, `documentaire`.
-   - `featured` is `true` (wel op de homepage) of `false` (niet).
    - De paden naar je media beginnen met `/media/projects/` en daarna de bestandsnaam die je in stap 1 uploadde.
    - Heb je geen preview-loop? Haal dan de hele regel `previewVideo: ...` weg.
    - Geen credits? Schrijf dan `credits: []`.
@@ -158,13 +155,12 @@ Gebruik dit als je de CMS niet wilt gebruiken.
 
 ---
 
-## Naam, e-mail, showreel en agent aanpassen
+## Naam, e-mail en agent aanpassen
 
 Ga in de CMS naar **Site-instellingen**. Daar pas je aan:
 
 - je naam (zoals hij groot in beeld en in het logo staat)
 - je functie, je e-mailadres en je socials
-- de **showreel** op de homepage: een mp4 met geluid, liefst 1920 × 1080, en een posterbeeld
 - je **agent**: vul de gegevens in en zet "Toon agent op contactpagina" aan
 
 Handmatig staat dit allemaal in `src/data/site.json`.
@@ -200,7 +196,6 @@ Zo vind je wat er mis is:
 | Preview-loop | mp4, ±640 px breed, 3–5 sec, **zonder geluid** | Liefst kleiner dan 1,5 MB |
 | Social video | mp4 (H.264), 1080 × 1920 | Liefst kleiner dan 10 MB |
 | Social poster | 1080 × 1920, jpg of webp | |
-| Showreel (homepage) | mp4 (H.264), 1920 × 1080, met geluid | Hou hem kort (30–60 sec) en kleiner dan 20 MB |
 
 - Video's verklein je gratis met [HandBrake](https://handbrake.fr): kies de preset **"Web → Vimeo YouTube 720p30"** of **"Fast 1080p30"**.
 - Afbeeldingen verklein je gratis met [Squoosh](https://squoosh.app).
@@ -227,7 +222,7 @@ src/
   content/projects/     één .md-bestand per project
   content/social/       één .md-bestand per social video
   content.config.ts     Zod-schema's (met Nederlandse foutmeldingen)
-  data/site.json        naam, e-mail, socials, showreel, agent
+  data/site.json        naam, e-mail, socials, agent
   easter-eggs/          één bestand per easter egg + registry.ts
   pages/                de pagina's
   scripts/              cursor, smooth scroll, scroll-animaties
@@ -254,6 +249,17 @@ Huidige eggs (niet verder vertellen):
 - de Konami-code
 - "cut" typen
 - de browserconsole openen
+
+### De handgemaakte look
+
+Papierkorrel, rafelige randen, handgetekende lijnen en rasterpunten staan in `src/styles/handmade.css`. Bovenin dat bestand zitten een paar knoppen:
+
+- `--grain-opacity`: hoe sterk de papierkorrel is (0 = uit)
+- `--tilt`: hoe scheef de projectkaartjes liggen (0deg = recht)
+
+### Foto's worden vanzelf geoptimaliseerd
+
+Bij elke build worden foto's in `public/media` die groter zijn dan 120 KB automatisch verkleind (max. 1600 px breed) en gecomprimeerd. Je hoeft ze dus niet zelf klein te maken.
 
 ### Kleuren
 

@@ -14,8 +14,8 @@ const { data } = project;
 ---
 
 <article class:list={['card', `card--${size}`]} data-type={typeKey(data.type)} data-preview>
-  <a href={`/werk/${data.slug}`} class="card__link" data-cursor="view">
-    <figure class="card__media">
+  <a href={`/portfolio/${data.slug}`} class="card__link" data-cursor="view">
+    <figure class="card__media rough-edge halftone-hover">
       <img
         src={data.thumbnail}
         alt=""
@@ -44,6 +44,13 @@ const { data } = project;
 </article>
 
 <style>
+  .card {
+    rotate: var(--card-tilt, 0deg);
+    transition: rotate 0.5s var(--ease-out);
+  }
+  .card:hover {
+    rotate: 0deg;
+  }
   .card__link {
     display: block;
     text-decoration: none;
@@ -100,7 +107,7 @@ const { data } = project;
   .card__type {
     margin-left: auto;
     border: 1px solid var(--blue-20);
-    border-radius: 999px;
+    border-radius: var(--wobble-a);
     padding: 0.05rem 0.6rem;
     font-size: 0.75rem;
     letter-spacing: 0.04em;

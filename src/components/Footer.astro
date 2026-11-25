@@ -33,6 +33,33 @@ const year = new Date().getFullYear();
     color: var(--cream);
     margin-top: clamp(4rem, 10vw, 8rem);
     padding-block: clamp(3rem, 8vw, 6rem) 1.5rem;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  /* rasterpunten die naar onder toe vervagen, zoals een gedrukt verloop */
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--halftone-cream);
+    background-size: 7px 7px;
+    opacity: 0.16;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 75%);
+    mask-image: linear-gradient(to bottom, black, transparent 75%);
+  }
+  /* handgetekende golfrand bovenaan */
+  .site-footer::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 14px;
+    background: var(--cream);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H300 V5 C270 9 250 3 220 6 S170 10 140 5 S90 2 60 7 S20 9 0 4 Z'/%3E%3C/svg%3E") top / 300px 14px repeat-x;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H300 V5 C270 9 250 3 220 6 S170 10 140 5 S90 2 60 7 S20 9 0 4 Z'/%3E%3C/svg%3E") top / 300px 14px repeat-x;
   }
   .site-footer a:hover {
     color: var(--cream);
@@ -63,7 +90,7 @@ const year = new Date().getFullYear();
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    border-top: 1px solid var(--cream-20);
+    background: var(--line-hand-cream) left top / 240px 6px repeat-x;
     padding-top: 1.25rem;
     font-size: var(--step--1);
   }

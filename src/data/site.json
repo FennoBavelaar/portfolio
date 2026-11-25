@@ -9,10 +9,6 @@
       "url": "https://www.instagram.com/fennobavelaar/"
     }
   ],
-  "showreel": {
-    "video": "/media/showreel/showreel.mp4",
-    "poster": "/media/showreel/showreel-poster.webp"
-  },
   "agent": {
     "show": false,
     "name": "",

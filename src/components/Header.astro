@@ -2,13 +2,13 @@
 import { site } from '../lib/site';
 
 const links = [
-  { href: '/werk', label: 'Werk' },
+  { href: '/', label: 'Portfolio' },
   { href: '/social', label: 'Social' },
   { href: '/over-mij', label: 'Over mij' },
   { href: '/contact', label: 'Contact' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isCurrent = (href: string) => path === href || path.startsWith(href + '/');
+const isCurrent = (href: string) => (href === '/' ? path === '/' || path.startsWith('/portfolio/') : path === href || path.startsWith(href + '/'));
 ---
 
 <header class="site-header">
@@ -45,7 +45,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
     background: color-mix(in srgb, var(--cream) 88%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--blue-10);
+    background-image: var(--line-hand);
+    background-repeat: repeat-x;
+    background-size: 240px 6px;
+    background-position: left bottom;
     view-transition-name: site-header;
   }
   .site-header__inner {
@@ -84,9 +87,9 @@ const isCurrent = (href: string) => path === href || path.startsWith(href + '/')
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -2px;
-    height: 1.5px;
-    background: currentColor;
+    bottom: -5px;
+    height: 6px;
+    background: var(--squiggle) center / 100% 100% no-repeat;
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.35s var(--ease-out);

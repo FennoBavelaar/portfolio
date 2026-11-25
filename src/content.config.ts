@@ -67,7 +67,6 @@ const projects = defineCollection({
         verplicht('credits', 'Een lijst met rol + naam (mag leeg zijn: credits: []).'),
       )
       .default([]),
-    featured: z.boolean(verplicht('featured', 'Vul true (op de homepage) of false in.')).default(false),
     order: z.coerce.number(verplicht('order', 'Een getal; lager staat eerder.')).default(100),
   }),
 });

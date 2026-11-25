@@ -1,266 +1,289 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { getProjects } from '../lib/projects';
+import { getProjects, TYPE_LABELS, typeKey } from '../lib/projects';
+import { PROJECT_TYPES } from '../content.config';
 import { site } from '../lib/site';
 
 const projects = await getProjects();
-const featured = projects.filter((p) => p.data.featured);
-const letters = [...site.name];
+const counts = Object.fromEntries(PROJECT_TYPES.map((t) => [t, projects.filter((p) => p.data.type === t).length]));
+const types = PROJECT_TYPES.filter((t) => counts[t] > 0);
 ---
 
-<Base>
-  <link slot="head" rel="preload" as="image" href={site.showreel.poster} fetchpriority="high" />
+<Base description={`Portfolio van ${site.name}, ${site.role.toLowerCase()}: commercials, videoclips, short films, branded content en documentaires.`}>
+  <div class="wrap">
+    <h1 class="page-title">Portfolio</h1>
 
-  <section class="hero" aria-label="Showreel">
-    <video
-      class="hero__video"
-      src={site.showreel.video}
-      poster={site.showreel.poster}
-      muted
-      loop
-      playsinline
-      preload="metadata"
-      data-cursor="sound"
-      data-cursor-label="geluid aan"
-      aria-label="Showreel"
-    ></video>
-    <div class="hero__shade" aria-hidden="true"></div>
-
-    <h1 class="hero__name" data-egg-name aria-label={site.name}>
-      {letters.map((l) => <span class="hero__letter" aria-hidden="true">{l}</span>)}
-    </h1>
-    <p class="hero__role">{site.role}</p>
-
-    <div class="hero__controls">
-      <button class="hero__btn hero__sound" type="button" aria-pressed="false">
-        <span class="hero__sound-icon" aria-hidden="true"></span>
-        <span class="hero__sound-label">Geluid aan</span>
-      </button>
-      <button class="hero__btn hero__play" type="button" aria-pressed="true" hidden>Pauzeer</button>
+    <div class="toolbar">
+      <div class="filters" role="group" aria-label="Filter op type">
+        <button class="btn" type="button" data-filter="alles" aria-pressed="true">Alles <sup>{projects.length}</sup></button>
+        {
+          types.map((t) => (
+            <button class="btn" type="button" data-filter={typeKey(t)} aria-pressed="false">
+              {TYPE_LABELS[t]} <sup>{counts[t]}</sup>
+            </button>
+          ))
+        }
+      </div>
+      <div class="view-toggle" role="group" aria-label="Weergave">
+        <button class="btn" type="button" data-view="grid" aria-pressed="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M0 0h6v6H0zM8 0h6v6H8zM0 8h6v6H0zM8 8h6v6H8z"/></svg>
+          Grid
+        </button>
+        <button class="btn" type="button" data-view="lijst" aria-pressed="false">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M0 1h14v2H0zM0 6h14v2H0zM0 11h14v2H0z"/></svg>
+          Lijst
+        </button>
+      </div>
     </div>
-    <a class="hero__scroll" href="#uitgelicht">Bekijk werk <span aria-hidden="true">↓</span></a>
-  </section>
 
-  <section id="uitgelicht" class="featured wrap" aria-labelledby="uitgelicht-titel">
-    <div class="section-head" data-reveal>
-      <h2 id="uitgelicht-titel">Uitgelicht</h2>
-      <a href="/werk" class="btn">Al het werk <span aria-hidden="true">→</span></a>
+    <p class="results visually-hidden" aria-live="polite"></p>
+
+    <div class="projects" data-view="grid">
+      {projects.map((p, i) => <ProjectCard project={p} eager={i < 2} headingLevel="h2" />)}
     </div>
-    <div class="featured__grid" data-reveal-stagger>
-      {featured.map((p, i) => <ProjectCard project={p} size={i === 0 ? 'large' : 'normal'} />)}
-    </div>
-  </section>
+    <p class="empty" hidden>Niets gevonden in deze categorie. Nog niet, tenminste.</p>
+  </div>
+
+  <div class="list-preview" aria-hidden="true">
+    <img alt="" width="1600" height="900" />
+    <video muted loop playsinline preload="none"></video>
+  </div>
 </Base>
 
 <style>
-  .hero {
-    position: relative;
-    height: calc(100svh - var(--header-h));
-    min-height: 26rem;
-    overflow: hidden;
-    background: var(--blue);
-    color: var(--cream);
-    isolation: isolate;
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
   }
-  .hero__video {
+  .filters,
+  .view-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .filters sup {
+    font-size: 0.65em;
+    opacity: 0.7;
+    margin-left: -0.15em;
+  }
+  .empty {
+    padding: 3rem 0;
+    font-size: var(--step-1);
+  }
+
+  /* --- Grid --- */
+  .projects[data-view='grid'] {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 2.5vw, 2rem);
+  }
+  @media (min-width: 40em) {
+    .projects[data-view='grid'] {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 75em) {
+    .projects[data-view='grid'] {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* --- Lijst --- */
+  /* in de grid liggen de kaartjes een tikje scheef, alsof ze zijn neergelegd */
+  .projects[data-view='grid'] :global(.card:nth-child(3n + 1)) {
+    --card-tilt: calc(var(--tilt) * -1);
+  }
+  .projects[data-view='grid'] :global(.card:nth-child(3n + 2)) {
+    --card-tilt: calc(var(--tilt) * 0.6);
+  }
+  .projects[data-view='grid'] :global(.card:nth-child(3n)) {
+    --card-tilt: calc(var(--tilt) * -0.3);
+  }
+  .projects[data-view='lijst'] {
+    background: var(--line-hand) left top / 240px 6px repeat-x;
+  }
+  .projects[data-view='lijst'] :global(.card) {
+    background: var(--line-hand) left bottom / 240px 6px repeat-x;
+  }
+  .projects[data-view='lijst'] :global(.card__link) {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0;
+  }
+  .projects[data-view='lijst'] :global(.card__meta) {
+    padding: 0;
+  }
+  .projects[data-view='lijst'] :global(.card__title) {
+    font-size: var(--step-1);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .projects[data-view='lijst'] :global(.card__link) {
+      grid-template-columns: 1fr;
+      padding: 1.25rem 0;
+    }
+    .projects[data-view='lijst'] :global(.card__media) {
+      display: none;
+    }
+    .projects[data-view='lijst'] :global(.card__meta) {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+      gap: 1rem;
+      transition: transform 0.45s var(--ease-out);
+    }
+    .projects[data-view='lijst'] :global(.card__title) {
+      font-size: var(--step-3);
+    }
+    .projects[data-view='lijst'] :global(.card__sub) {
+      margin: 0;
+      gap: 0.6rem;
+    }
+    .projects[data-view='lijst'] :global(.card__link:hover .card__meta) {
+      transform: translateX(0.75rem);
+    }
+  }
+
+  /* Preview die de cursor volgt (alleen lijst, alleen desktop) */
+  .list-preview {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    width: clamp(16rem, 26vw, 24rem);
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    -webkit-mask: var(--mask-rough) 0 0 / 100% 100%;
+    mask: var(--mask-rough) 0 0 / 100% 100%;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.85;
+    transition: opacity 0.25s, scale 0.35s var(--ease-out);
+    box-shadow: 0 20px 50px var(--blue-20);
+    background: var(--blue);
+  }
+  .list-preview.is-visible {
+    opacity: 1;
+    scale: 1;
+  }
+  .list-preview img,
+  .list-preview video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -2;
-  }
-  .hero__shade {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(to top, color-mix(in srgb, var(--blue) 75%, transparent), transparent 55%);
-    pointer-events: none;
-  }
-  .hero__name {
-    position: absolute;
-    left: var(--gutter);
-    right: var(--gutter);
-    bottom: clamp(4.25rem, 8vh, 6rem);
-    font-size: clamp(3.5rem, 18vw, 22rem);
-    white-space: nowrap;
-    line-height: var(--display-leading);
-    letter-spacing: -0.02em;
-    display: flex;
-    overflow: hidden;
-    cursor: default;
-    user-select: none;
-    pointer-events: auto;
-  }
-  .hero__letter {
-    display: inline-block;
-  }
-  .hero__role {
-    position: absolute;
-    left: var(--gutter);
-    bottom: clamp(2.4rem, 5vh, 3.5rem);
-    margin: 0;
-    font-size: var(--step-0);
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-  .hero__controls {
-    position: absolute;
-    right: var(--gutter);
-    top: 1.25rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .hero__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    background: color-mix(in srgb, var(--blue) 55%, transparent);
-    border: 1px solid var(--cream-70);
-    color: var(--cream);
-    border-radius: 999px;
-    padding: 0.45rem 0.95rem;
-    font-size: var(--step--1);
-    font-weight: 500;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: background 0.2s;
-  }
-  .hero__btn:hover {
-    background: var(--blue-light);
-  }
-  .hero__sound-icon {
-    width: 1rem;
-    height: 0.8rem;
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 2px;
-  }
-  .hero__sound-icon::before,
-  .hero__sound-icon::after {
-    content: '';
-    flex: 1;
-    background: currentColor;
-    height: 30%;
-  }
-  .hero__sound[aria-pressed='true'] .hero__sound-icon::before {
-    animation: eq 0.8s ease-in-out infinite alternate;
-  }
-  .hero__sound[aria-pressed='true'] .hero__sound-icon::after {
-    animation: eq 0.6s ease-in-out infinite alternate-reverse;
-  }
-  @keyframes eq {
-    to {
-      height: 100%;
-    }
-  }
-  .hero__scroll {
-    position: absolute;
-    right: var(--gutter);
-    bottom: clamp(2.4rem, 5vh, 3.5rem);
-    font-size: var(--step--1);
-    font-weight: 500;
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .hero__scroll:hover {
-    color: var(--cream);
-    opacity: 0.75;
-  }
-
-  .featured {
-    padding-top: clamp(3rem, 8vw, 6rem);
-  }
-  :global(.section-head) {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
-  }
-  :global(.section-head h2) {
-    font-size: var(--step-3);
-  }
-  .featured__grid {
-    display: grid;
-    gap: clamp(2rem, 4vw, 3.5rem) clamp(1rem, 2.5vw, 2rem);
-  }
-  @media (min-width: 48em) {
-    .featured__grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    .featured__grid > :global(.card--large) {
-      grid-column: 1 / -1;
-    }
   }
 </style>
 
 <script>
   import { gsap } from 'gsap';
   import { initHoverPreviews } from '../scripts/previews';
-  import { reducedMotion } from '../scripts/motion';
+  import { finePointer, reducedMotion } from '../scripts/motion';
 
-  initHoverPreviews();
+  const container = document.querySelector<HTMLElement>('.projects')!;
+  const cards = [...container.querySelectorAll<HTMLElement>('.card')];
+  const empty = document.querySelector<HTMLElement>('.empty')!;
+  const results = document.querySelector<HTMLElement>('.results')!;
+  const filterBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const viewBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-view]')].filter((b) => b.tagName === 'BUTTON');
 
-  // Laat de naam precies de breedte vullen, hoe lang hij ook is.
-  const nameEl = document.querySelector<HTMLElement>('.hero__name')!;
-  const fit = () => {
-    nameEl.style.fontSize = '';
-    const avail = nameEl.clientWidth;
-    const used = [...nameEl.children].reduce((w, c) => w + (c as HTMLElement).offsetWidth, 0);
-    const size = parseFloat(getComputedStyle(nameEl).fontSize);
-    if (used > 0) nameEl.style.fontSize = `${Math.min(size * (avail / used) * 0.98, 352)}px`;
-  };
-  document.fonts.ready.then(fit);
-  window.addEventListener('resize', fit);
+  initHoverPreviews(container);
 
-  const video = document.querySelector<HTMLVideoElement>('.hero__video')!;
-  const soundBtn = document.querySelector<HTMLButtonElement>('.hero__sound')!;
-  const soundLabel = soundBtn.querySelector('.hero__sound-label')!;
-  const playBtn = document.querySelector<HTMLButtonElement>('.hero__play')!;
-
-  const setSound = (on: boolean) => {
-    video.muted = !on;
-    if (on) {
-      video.volume = 1;
-      video.play().catch(() => {});
+  // ---------- Filters ----------
+  function applyFilter(type: string, animate = true) {
+    filterBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === type)));
+    const visible = cards.filter((c) => type === 'alles' || c.dataset.type === type);
+    cards.forEach((c) => (c.hidden = !visible.includes(c)));
+    empty.hidden = visible.length > 0;
+    results.textContent = `${visible.length} project${visible.length === 1 ? '' : 'en'} zichtbaar`;
+    if (animate && !reducedMotion()) {
+      gsap.fromTo(visible, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.05, overwrite: true });
     }
-    soundBtn.setAttribute('aria-pressed', String(on));
-    soundLabel.textContent = on ? 'Geluid uit' : 'Geluid aan';
-    video.dataset.cursorLabel = on ? 'geluid uit' : 'geluid aan';
-    document.dispatchEvent(new Event('cursor:refresh'));
+    const url = new URL(location.href);
+    type === 'alles' ? url.searchParams.delete('type') : url.searchParams.set('type', type);
+    history.replaceState(null, '', url);
+  }
+  filterBtns.forEach((b) => b.addEventListener('click', () => applyFilter(b.dataset.filter!)));
+  const initial = new URL(location.href).searchParams.get('type');
+  if (initial && filterBtns.some((b) => b.dataset.filter === initial)) applyFilter(initial, false);
+
+  // ---------- Grid / lijst ----------
+  const store = {
+    get: () => {
+      try {
+        return localStorage.getItem('werk-view');
+      } catch {
+        return null;
+      }
+    },
+    set: (v: string) => {
+      try {
+        localStorage.setItem('werk-view', v);
+      } catch {}
+    },
   };
-  const toggleSound = () => setSound(video.muted);
-  video.addEventListener('click', toggleSound);
-  soundBtn.addEventListener('click', toggleSound);
+  function setView(view: string) {
+    container.dataset.view = view;
+    viewBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    store.set(view);
+    // in lijstweergave op desktop: geen "bekijk"-cirkel, de preview zegt genoeg
+    container.querySelectorAll<HTMLElement>('.card__link').forEach((a) => {
+      if (view === 'lijst' && finePointer()) a.dataset.cursor = 'hidden';
+      else a.dataset.cursor = 'view';
+    });
+  }
+  viewBtns.forEach((b) => b.addEventListener('click', () => setView(b.dataset.view!)));
+  const saved = store.get();
+  if (saved === 'lijst') setView('lijst');
 
-  // Bij "minder beweging": niet automatisch afspelen, maar een play-knop tonen.
-  const syncPlay = () => {
-    playBtn.setAttribute('aria-pressed', String(!video.paused));
-    playBtn.textContent = video.paused ? 'Speel af' : 'Pauzeer';
-  };
-  playBtn.hidden = false;
-  let userPaused = reducedMotion();
-  playBtn.addEventListener('click', () => {
-    userPaused = !video.paused;
-    video.paused ? video.play() : video.pause();
-  });
-  video.addEventListener('play', syncPlay);
-  video.addEventListener('pause', syncPlay);
-  if (!reducedMotion()) video.play().catch(() => {});
-  syncPlay();
+  // ---------- Preview volgt de cursor (lijst, desktop) ----------
+  const preview = document.querySelector<HTMLElement>('.list-preview')!;
+  if (finePointer()) {
+    const img = preview.querySelector('img')!;
+    const vid = preview.querySelector('video')!;
+    const dur = reducedMotion() ? 0 : 0.6;
+    const xTo = gsap.quickTo(preview, 'x', { duration: dur, ease: 'power3' });
+    const yTo = gsap.quickTo(preview, 'y', { duration: dur, ease: 'power3' });
+    const rTo = gsap.quickTo(preview, 'rotate', { duration: 0.8, ease: 'power3' });
+    let lastX = 0;
 
-  // Pauzeer de showreel als hij uit beeld is (scheelt batterij)
-  new IntersectionObserver(([e]) => {
-    if (!e.isIntersecting) video.pause();
-    else if (!userPaused) video.play().catch(() => {});
-  }).observe(video);
+    window.addEventListener('pointermove', (e) => {
+      if (container.dataset.view !== 'lijst') return;
+      const w = preview.offsetWidth;
+      const h = preview.offsetHeight;
+      const x = Math.min(e.clientX + 24, window.innerWidth - w - 16);
+      xTo(x);
+      yTo(e.clientY - h / 2);
+      if (!reducedMotion()) rTo(gsap.utils.clamp(-8, 8, (e.clientX - lastX) * 0.6));
+      lastX = e.clientX;
+    });
 
-  if (!reducedMotion()) {
-    gsap.from('.hero__letter', { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.06, delay: 0.1 });
-    gsap.from('.hero__role, .hero__controls, .hero__scroll', { opacity: 0, y: 10, duration: 0.8, delay: 0.6, stagger: 0.08 });
+    cards.forEach((card) => {
+      const link = card.querySelector('.card__link')!;
+      link.addEventListener('mouseenter', () => {
+        if (container.dataset.view !== 'lijst') return;
+        const thumb = card.querySelector('img')!;
+        const v = card.querySelector<HTMLVideoElement>('video');
+        img.src = thumb.src;
+        vid.removeAttribute('src');
+        vid.style.opacity = '0';
+        if (v?.dataset.src && !reducedMotion()) {
+          vid.src = v.dataset.src;
+          vid.play().then(() => (vid.style.opacity = '1')).catch(() => {});
+        }
+        preview.classList.add('is-visible');
+      });
+      link.addEventListener('mouseleave', () => {
+        preview.classList.remove('is-visible');
+        vid.pause();
+      });
+    });
   }
 </script>

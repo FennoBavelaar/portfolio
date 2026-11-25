@@ -31,7 +31,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
         <h1 class="project__title">{data.title}</h1>
       </header>
 
-      <div class="player" data-src={src}>
+      <div class="player rough-edge rough-edge--lg" data-src={src}>
         <button class="player__facade" type="button" data-cursor="play" aria-label={`Speel "${data.title}" af (laadt de ${provider}-speler)`}>
           <img src={data.thumbnail} alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
           <span class="player__icon" aria-hidden="true">
@@ -73,7 +73,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
 
     {
       next.id !== project.id && (
-        <a href={`/werk/${next.data.slug}`} class="next" data-cursor="view">
+        <a href={`/portfolio/${next.data.slug}`} class="next" data-cursor="view">
           <div class="wrap next__inner">
             <span class="eyebrow">Volgend project</span>
             <span class="next__title">
@@ -133,7 +133,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
     position: relative;
     width: clamp(4rem, 9vw, 6.5rem);
     aspect-ratio: 1;
-    border-radius: 50%;
+    border-radius: 48% 52% 45% 55% / 55% 45% 52% 48%;
     display: grid;
     place-items: center;
     background: var(--cream);
@@ -205,14 +205,14 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
   }
   .credits dl {
     margin: 0;
-    border-top: 1px solid var(--blue-20);
+    background: var(--line-hand) left top / 240px 6px repeat-x;
   }
   .credits dl > div {
     display: grid;
     grid-template-columns: minmax(8rem, 1fr) 2fr;
     gap: 1rem;
     padding: 0.7rem 0;
-    border-bottom: 1px solid var(--blue-20);
+    background: var(--line-hand) left bottom / 240px 6px repeat-x;
   }
   .credits dd {
     margin: 0;
@@ -266,7 +266,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
   /* footer sluit direct aan op "volgend project" */
   :global(main:has(.next) + .site-footer) {
     margin-top: 0;
-    border-top: 1px solid var(--cream-20);
+    border-top: 0;
   }
 </style>
 

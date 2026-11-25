@@ -16,7 +16,6 @@ credits:
     name: "[KAYLEE SWIERS]"
   - role: Edit
     name: "[MATTIJN SMIT]"
-featured: true
 order: 1
 ---
 Een excentrieke Italiaanse man beschrijft op (on)gepaste wijze zijn volwaardige liefde voor *Lagocello*.
