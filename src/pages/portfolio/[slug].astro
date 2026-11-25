@@ -73,7 +73,7 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
 
     {
       next.id !== project.id && (
-        <a href={`/portfolio/${next.data.slug}`} class="next" data-cursor="view">
+        <a href={`/portfolio/${next.data.slug}`} class="next" data-cursor="view" data-autoplay>
           <div class="wrap next__inner">
             <span class="eyebrow">Volgend project</span>
             <span class="next__title">
@@ -301,5 +301,15 @@ const description = (project.body || '').replace(/[#*_>\[\]()`]/g, '').trim().sl
     };
     btn.addEventListener('pointerenter', warm, { once: true });
     btn.addEventListener('focus', warm, { once: true });
+
+    // Kwam je hier via een klik op een project? Dan meteen afspelen.
+    try {
+      const want = sessionStorage.getItem('autoplay');
+      sessionStorage.removeItem('autoplay');
+      if (want && want === location.pathname.replace(/\/$/, '')) {
+        warm();
+        btn.click();
+      }
+    } catch {}
   });
 </script>

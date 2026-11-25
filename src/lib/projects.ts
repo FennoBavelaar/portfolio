@@ -42,6 +42,6 @@ export function parseEmbed(url: string): { provider: 'vimeo' | 'youtube'; id: st
 export function embedSrc(url: string): string | null {
   const e = parseEmbed(url);
   if (!e) return null;
-  if (e.provider === 'youtube') return `https://www.youtube-nocookie.com/embed/${e.id}?autoplay=1&rel=0&modestbranding=1`;
-  return `https://player.vimeo.com/video/${e.id}?autoplay=1&dnt=1${e.hash ? `&h=${e.hash}` : ''}`;
+  if (e.provider === 'youtube') return `https://www.youtube-nocookie.com/embed/${e.id}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1`;
+  return `https://player.vimeo.com/video/${e.id}?autoplay=1&muted=0&dnt=1${e.hash ? `&h=${e.hash}` : ''}`;
 }

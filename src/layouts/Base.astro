@@ -60,13 +60,6 @@ const ogUrl = new URL(ogImage, Astro.site);
     <slot name="head" />
   </head>
   <body class={bodyClass}>
-    <!-- Filters voor de handgemaakte look (zie src/styles/handmade.css) -->
-    <svg class="visually-hidden" aria-hidden="true" focusable="false">
-      <filter id="inkt" x="-4%" y="-12%" width="108%" height="124%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" seed="3" result="ruis"></feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="ruis" scale="2.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
-      </filter>
-    </svg>
     <a class="skip-link" href="#inhoud">Direct naar de inhoud</a>
     <Header />
     <main id="inhoud">
@@ -130,22 +123,27 @@ const ogUrl = new URL(ogImage, Astro.site);
     white-space: nowrap;
   }
   .cursor[data-state='link'] {
-    width: 44px;
-    height: 44px;
-    margin: -22px 0 0 -22px;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0 -14px;
     background: transparent;
   }
   .cursor[data-state='play'],
   .cursor[data-state='view'],
-  .cursor[data-state='sound'] {
-    width: 84px;
-    height: 84px;
-    margin: -42px 0 0 -42px;
+  .cursor[data-state='sound'],
+  .cursor[data-state='copy'] {
+    width: 38px;
+    height: 38px;
+    margin: -19px 0 0 -19px;
   }
   .cursor[data-state='play'] .cursor__label,
   .cursor[data-state='view'] .cursor__label,
-  .cursor[data-state='sound'] .cursor__label {
+  .cursor[data-state='sound'] .cursor__label,
+  .cursor[data-state='copy'] .cursor__label {
     opacity: 1;
+  }
+  .cursor__label svg {
+    display: block;
   }
   .cursor.is-on[data-state='hidden'] {
     opacity: 0;

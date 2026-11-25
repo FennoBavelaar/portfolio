@@ -1,30 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { getProjects, TYPE_LABELS, typeKey } from '../lib/projects';
-import { PROJECT_TYPES } from '../content.config';
+import { getProjects } from '../lib/projects';
 import { site } from '../lib/site';
 
 const projects = await getProjects();
-const counts = Object.fromEntries(PROJECT_TYPES.map((t) => [t, projects.filter((p) => p.data.type === t).length]));
-const types = PROJECT_TYPES.filter((t) => counts[t] > 0);
 ---
 
 <Base description={`Portfolio van ${site.name}, ${site.role.toLowerCase()}: commercials, videoclips, short films, branded content en documentaires.`}>
   <div class="wrap">
-    <h1 class="page-title">Portfolio</h1>
+    <h1 class="visually-hidden">Portfolio</h1>
 
     <div class="toolbar">
-      <div class="filters" role="group" aria-label="Filter op type">
-        <button class="btn" type="button" data-filter="alles" aria-pressed="true">Alles <sup>{projects.length}</sup></button>
-        {
-          types.map((t) => (
-            <button class="btn" type="button" data-filter={typeKey(t)} aria-pressed="false">
-              {TYPE_LABELS[t]} <sup>{counts[t]}</sup>
-            </button>
-          ))
-        }
-      </div>
       <div class="view-toggle" role="group" aria-label="Weergave">
         <button class="btn" type="button" data-view="grid" aria-pressed="true">
           <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M0 0h6v6H0zM8 0h6v6H8zM0 8h6v6H0zM8 8h6v6H8z"/></svg>
@@ -37,12 +24,9 @@ const types = PROJECT_TYPES.filter((t) => counts[t] > 0);
       </div>
     </div>
 
-    <p class="results visually-hidden" aria-live="polite"></p>
-
     <div class="projects" data-view="grid">
       {projects.map((p, i) => <ProjectCard project={p} eager={i < 2} headingLevel="h2" />)}
     </div>
-    <p class="empty" hidden>Niets gevonden in deze categorie. Nog niet, tenminste.</p>
   </div>
 
   <div class="list-preview" aria-hidden="true">
@@ -54,26 +38,13 @@ const types = PROJECT_TYPES.filter((t) => counts[t] > 0);
 <style>
   .toolbar {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    justify-content: flex-end;
+    padding-top: clamp(1.25rem, 3vw, 2rem);
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
   }
-  .filters,
   .view-toggle {
     display: flex;
-    flex-wrap: wrap;
     gap: 0.5rem;
-  }
-  .filters sup {
-    font-size: 0.65em;
-    opacity: 0.7;
-    margin-left: -0.15em;
-  }
-  .empty {
-    padding: 3rem 0;
-    font-size: var(--step-1);
   }
 
   /* --- Grid --- */
@@ -189,30 +160,9 @@ const types = PROJECT_TYPES.filter((t) => counts[t] > 0);
 
   const container = document.querySelector<HTMLElement>('.projects')!;
   const cards = [...container.querySelectorAll<HTMLElement>('.card')];
-  const empty = document.querySelector<HTMLElement>('.empty')!;
-  const results = document.querySelector<HTMLElement>('.results')!;
-  const filterBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
   const viewBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-view]')].filter((b) => b.tagName === 'BUTTON');
 
   initHoverPreviews(container);
-
-  // ---------- Filters ----------
-  function applyFilter(type: string, animate = true) {
-    filterBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === type)));
-    const visible = cards.filter((c) => type === 'alles' || c.dataset.type === type);
-    cards.forEach((c) => (c.hidden = !visible.includes(c)));
-    empty.hidden = visible.length > 0;
-    results.textContent = `${visible.length} project${visible.length === 1 ? '' : 'en'} zichtbaar`;
-    if (animate && !reducedMotion()) {
-      gsap.fromTo(visible, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out', stagger: 0.05, overwrite: true });
-    }
-    const url = new URL(location.href);
-    type === 'alles' ? url.searchParams.delete('type') : url.searchParams.set('type', type);
-    history.replaceState(null, '', url);
-  }
-  filterBtns.forEach((b) => b.addEventListener('click', () => applyFilter(b.dataset.filter!)));
-  const initial = new URL(location.href).searchParams.get('type');
-  if (initial && filterBtns.some((b) => b.dataset.filter === initial)) applyFilter(initial, false);
 
   // ---------- Grid / lijst ----------
   const store = {

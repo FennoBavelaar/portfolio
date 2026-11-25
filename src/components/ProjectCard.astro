@@ -14,7 +14,7 @@ const { data } = project;
 ---
 
 <article class:list={['card', `card--${size}`]} data-type={typeKey(data.type)} data-preview>
-  <a href={`/portfolio/${data.slug}`} class="card__link" data-cursor="view">
+  <a href={`/portfolio/${data.slug}`} class="card__link" data-cursor="view" data-autoplay>
     <figure class="card__media rough-edge halftone-hover">
       <img
         src={data.thumbnail}
