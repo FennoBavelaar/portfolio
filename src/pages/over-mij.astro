@@ -4,9 +4,15 @@ import { site } from '../lib/site';
 // De lange tekst staat in src/data/over-mij.md (ook te bewerken via de CMS).
 import * as overMij from '../data/over-mij.md';
 
-const intro = (overMij.frontmatter?.intro as string | undefined)?.trim() || 'Oké, laten we het kort houden...';
+import { afkappen } from '../lib/afkappen';
+
+const fm = (overMij.frontmatter ?? {}) as Record<string, unknown>;
+const knopMeer = String(fm.knop_meer || 'meer tonen');
+const knopMinder = String(fm.knop_minder || 'minder tonen');
 // Vangnet: losse '---'-regels bovenaan de tekst (bijv. door een CMS-foutje) niet tonen als strepen.
-const langeTekst = (await overMij.compiledContent()).replace(/^(\s*<hr\s*\/?>\s*)+/, '');
+const html = (await overMij.compiledContent()).replace(/^(\s*<hr\s*\/?>\s*)+/, '');
+// Alles vóór [meer] staat altijd in beeld, de rest klapt open.
+const { zichtbaar, rest } = afkappen(html);
 ---
 
 <Base title="Over mij" description={`Over ${site.name}. Kort gehouden. Min of meer.`}>
@@ -14,20 +20,20 @@ const langeTekst = (await overMij.compiledContent()).replace(/^(\s*<hr\s*\/?>\s*
     <h1 class="visually-hidden">Over mij</h1>
 
     <div class="about__text">
-      <p class="about__lead">{intro}</p>
+      <div class="about__lead" set:html={zichtbaar} />
       <button
         id="about-toggle"
         class="about__toggle"
         type="button"
         aria-expanded="false"
         aria-controls="about-meer"
-        ><span class="about__label about__label--more">meer tonen</span><span class="about__label about__label--less" aria-hidden="true"
-          >minder tonen</span
+        ><span class="about__label about__label--more">{knopMeer}</span><span class="about__label about__label--less" aria-hidden="true"
+          >{knopMinder}</span
         ></button
       >
 
       <div id="about-meer" class="about__more" hidden>
-        <div class="about__more-inner" set:html={langeTekst} />
+        <div class="about__more-inner" set:html={rest} />
       </div>
       <div class="about__spacer" aria-hidden="true"></div>
     </div>
@@ -41,8 +47,8 @@ const langeTekst = (await overMij.compiledContent()).replace(/^(\s*<hr\s*\/?>\s*
     font-size: var(--step-1);
     line-height: 1.6;
   }
-  .about__lead {
-    margin: 0;
+  .about__lead :global(p:last-child) {
+    margin-bottom: 0;
   }
   /* De knop staat links onder de openingszin. Beide labels zitten in dezelfde
      grid-cel, zodat de knop altijd even breed is en nooit verspringt. */

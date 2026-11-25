@@ -143,13 +143,20 @@ content:
     type: file
     path: src/data/over-mij.md
     fields:
-      - name: intro
-        label: Openingszin (staat altijd in beeld)
-        type: string
-        default: "Oké, laten we het kort houden..."
       - name: body
-        label: Lange tekst (klapt open onder de knop "meer tonen")
+        label: Tekst
+        description: 'Zet [meer] op de plek waar de tekst wordt afgekapt. Alles daarvoor staat altijd in beeld (met ... erachter), de rest klapt open na de knop.'
         type: rich-text
+      - name: knop_meer
+        label: Tekst op de knop (dicht)
+        type: string
+        required: true
+        default: meer tonen
+      - name: knop_minder
+        label: Tekst op de knop (open)
+        type: string
+        required: true
+        default: minder tonen
 
   - name: site
     label: Site-instellingen

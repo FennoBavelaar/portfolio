@@ -1,6 +1,9 @@
 ---
-intro: "Oké, laten we het kort houden..."
+knop_meer: "meer tonen"
+knop_minder: "minder tonen"
 ---
+
+Oké, laten we het kort houden[meer]
 
 Ik maak video's die raken, maar vooral video's die hun doel bereiken. Ik bedenk concepten, schrijf scripts, regisseer en monteer. Ik zoek altijd naar dat ene stapje creatiever, gebruik graag humor om op te vallen en heb als oud one-man band verstand van camera, licht en nabewerking. Mezelf neem ik niet te serieus, mijn vak wel.
 
