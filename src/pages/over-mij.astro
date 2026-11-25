@@ -2,9 +2,11 @@
 import Base from '../layouts/Base.astro';
 import { site } from '../lib/site';
 // De lange tekst staat in src/data/over-mij.md (ook te bewerken via de CMS).
-import { Content as LangeTekst, frontmatter } from '../data/over-mij.md';
+import * as overMij from '../data/over-mij.md';
 
-const intro = (frontmatter?.intro as string | undefined)?.trim() || 'Oké, laten we het kort houden...';
+const intro = (overMij.frontmatter?.intro as string | undefined)?.trim() || 'Oké, laten we het kort houden...';
+// Vangnet: losse '---'-regels bovenaan de tekst (bijv. door een CMS-foutje) niet tonen als strepen.
+const langeTekst = (await overMij.compiledContent()).replace(/^(\s*<hr\s*\/?>\s*)+/, '');
 ---
 
 <Base title="Over mij" description={`Over ${site.name}. Kort gehouden. Min of meer.`}>
@@ -25,9 +27,7 @@ const intro = (frontmatter?.intro as string | undefined)?.trim() || 'Oké, laten
       >
 
       <div id="about-meer" class="about__more" hidden>
-        <div class="about__more-inner">
-          <LangeTekst />
-        </div>
+        <div class="about__more-inner" set:html={langeTekst} />
       </div>
       <div class="about__spacer" aria-hidden="true"></div>
     </div>
