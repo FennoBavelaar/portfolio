@@ -1,11 +1,8 @@
 ---
-knop_meer: "meer tonen"
-knop_minder: "minder tonen"
+knop_meer: meer tonen
+knop_minder: minder tonen
 ---
-
-Oké, laten we het kort houden[meer]
-
-Ik maak video's die raken, maar vooral video's die hun doel bereiken. Ik bedenk concepten, schrijf scripts, regisseer en monteer. Ik zoek altijd naar dat ene stapje creatiever, gebruik graag humor om op te vallen en heb als oud one-man band verstand van camera, licht en nabewerking. Mezelf neem ik niet te serieus, mijn vak wel.
+Oké, laten we het kort houden. Ik maak video's die raken, maar vooral video's die hun doel bereiken. Ik bedenk concepten, schrijf scripts, regisseer en monteer. Ik zoek altijd naar dat ene stapje creatiever, gebruik graag humor om [meer] op te vallen en heb als oud one-man band verstand van camera, licht en nabewerking. Mezelf neem ik niet te serieus, mijn vak wel.
 
 Dat opvallen is belangrijker dan ooit, want er wordt tegenwoordig ontzettend veel online gegooid. Elke dag, elk uur, elke seconde verschijnen er ergens ter wereld nieuwe video's. Ik wil video's maken die blijven hangen. Video's die iets met je doen, waar je om moet lachen, die je doorstuurt of waar je achteraf nog eens aan terugdenkt. En minstens zo belangrijk: video's die doen waarvoor ze gemaakt zijn. Een mooie video die zijn doel niet haalt, is in mijn ogen geen geslaagde video.
 
@@ -40,5 +37,5 @@ Een van die deuren leidde naar Bruut, een creatief videoproductiebureau waar ik 
 Doordat ik zowel aan de voorkant als aan de achterkant van het proces betrokken ben, kan ik een idee van begin tot eind bewaken. Ik weet wat er nodig is om een concept goed uit te voeren, en tijdens het filmen en monteren houd ik het oorspronkelijke idee steeds voor ogen. Alles wat ik als elfjarige met vrienden, als vakantiefilmer met de camera van mijn ouders, als one-man band in mijn tussenjaar en als student aan de TV Academy heb geleerd, komt daar samen.
 
 En zo kom ik weer uit bij waar het voor mij allemaal om draait: video's maken die raken, maar vooral video's die hun doel bereiken. Video's die opvallen in de eindeloze stroom content, die net dat stapje creatiever zijn en waar humor vaak een belangrijke rol in speelt. Ik neem mezelf niet te serieus, maar mijn vak des te meer. Die passie begon met een camera, een paar vrienden en een hoop enthousiasme, en die is er nog steeds...  
-  
+
 Ben ik nou nog steeds aan het lullen?
