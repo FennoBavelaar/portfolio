@@ -3,7 +3,7 @@ import path from 'node:path';
 import { site } from './site';
 
 const root = process.cwd();
-const fontfile = path.join(root, 'src/assets/fonts/Basteleur-Bold.ttf');
+const fontfile = path.join(root, 'src/assets/fonts/Fraunces-SoftBold.ttf');
 const W = 1200;
 const H = 630;
 
@@ -11,7 +11,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 async function text(markup: string, size: number, width: number) {
   return sharp({
-    text: { text: `<span foreground="#F3EEE3">${markup}</span>`, font: `Basteleur Bold ${size}`, fontfile, rgba: true, width, wrap: 'word' },
+    text: { text: `<span foreground="#F3EEE3">${markup}</span>`, font: `Fraunces ${size}`, fontfile, rgba: true, width, wrap: 'word' },
   })
     .png()
     .toBuffer();

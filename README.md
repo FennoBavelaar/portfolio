@@ -265,7 +265,7 @@ Alle kleuren staan als CSS custom properties bovenin `src/styles/global.css`:
 
 ### Fonts en licenties
 
-- **Basteleur** van Velvetyne Type Foundry: SIL Open Font License, gratis voor commercieel gebruik. De licentie staat in `public/fonts/Basteleur-LICENSE.txt`.
+- **Fraunces** (soft-variant) van Undercase Type: SIL Open Font License, gratis voor commercieel gebruik. De licentie staat in `public/fonts/Fraunces-LICENSE.txt`. Hoe zacht de letters zijn, stel je in met `--display-soft` in `src/styles/global.css` (0 = scherp, 100 = zacht).
 - **Switzer** van Indian Type Foundry / Fontshare: ITF Free Font License, gratis voor persoonlijk en commercieel gebruik.
 
 ### Placeholder-video's in projecten

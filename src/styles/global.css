@@ -1,19 +1,12 @@
 /* ==========================================================================
    Fonts (zelf gehost)
-   Basteleur — Velvetyne, SIL Open Font License
+   Fraunces (soft) — Undercase Type, SIL Open Font License
    Switzer   — Fontshare / Indian Type Foundry, ITF Free Font License
    ========================================================================== */
 @font-face {
-  font-family: 'Basteleur';
-  src: url('/fonts/Basteleur-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Basteleur';
-  src: url('/fonts/Basteleur-Moonlight.woff2') format('woff2');
-  font-weight: 300;
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Soft.woff2') format('woff2-variations'), url('/fonts/Fraunces-Soft.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -66,7 +59,9 @@
   --accent: var(--blue);
   --accent-hover: var(--blue-light);
 
-  --font-display: 'Basteleur', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  /* "soft": de SOFT-as van Fraunces op max (0 = scherp, 100 = zacht) */
+  --display-soft: 100;
   --font-body: 'Switzer', 'Helvetica Neue', Arial, sans-serif;
 
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.92rem);
@@ -110,6 +105,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Switzer heeft deze as niet en negeert hem; Fraunces wordt er zacht van */
+  font-variation-settings: 'SOFT' var(--display-soft);
 }
 main {
   flex: 1;

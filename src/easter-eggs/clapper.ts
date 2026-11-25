@@ -59,7 +59,7 @@ function action() {
             <text x="24" y="166">SCÈNE</text><text x="170" y="166">TAKE</text>
             <text x="24" y="206">REGIE</text><text x="170" y="206">DATUM</text>
           </g>
-          <g fill="#f3eee3" font-family="Basteleur, Georgia, serif" font-weight="700">
+          <g fill="#f3eee3" font-family="Fraunces, Georgia, serif" font-weight="700" style="font-variation-settings:'SOFT' 100">
             <text x="24" y="142" font-size="18">${name || 'PORTFOLIO'}</text>
             <text x="24" y="184" font-size="18">01</text><text x="170" y="184" font-size="18">5</text>
             <text x="24" y="224" font-size="16">${name}</text>
