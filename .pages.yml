@@ -139,12 +139,16 @@ content:
         required: true
 
   - name: over-mij
-    label: Over mij (lange tekst)
+    label: Over mij
     type: file
     path: src/data/over-mij.md
     fields:
+      - name: intro
+        label: Openingszin (staat altijd in beeld)
+        type: string
+        default: "Oké, laten we het kort houden..."
       - name: body
-        label: Tekst die openklapt onder "Oké, laten we het kort houden..."
+        label: Lange tekst (klapt open onder de knop "meer tonen")
         type: rich-text
 
   - name: site

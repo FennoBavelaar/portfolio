@@ -37,7 +37,7 @@ Dit doe je één keer. Daarna hoef je er nooit meer naar om te kijken.
 
 1. Ga naar [app.pagescms.org](https://app.pagescms.org).
 2. Log in met je GitHub-account en geef Pages CMS toegang tot je repository.
-3. Kies je repository. Links zie je nu **Projecten**, **Social video's**, **Over mij (lange tekst)**, **Site-instellingen** en **Media**.
+3. Kies je repository. Links zie je nu **Projecten**, **Social video's**, **Over mij**, **Site-instellingen** en **Media**.
 
 Dat is alles. Alles wat je in de CMS opslaat, komt in je repository terecht. Netlify of Vercel zet de nieuwe versie daarna vanzelf online. Dat duurt meestal 1 à 2 minuten.
 
@@ -165,7 +165,7 @@ Ga in de CMS naar **Site-instellingen**. Daar pas je aan:
 
 Handmatig staat dit allemaal in `src/data/site.json`.
 
-De lange tekst op **Over mij** (de tekst die openklapt na "meer tonen") bewerk je in de CMS onder **Over mij (lange tekst)**. Handmatig staat hij in `src/data/over-mij.md`. Elke lege regel begint een nieuwe alinea.
+De tekst op **Over mij** bewerk je in de CMS onder **Over mij**. Daar staan twee velden: de **openingszin** (standaard "Oké, laten we het kort houden...") en de **lange tekst** die openklapt na de knop "meer tonen". Handmatig staat alles in `src/data/over-mij.md`: de openingszin bovenin achter `intro:`, de lange tekst eronder. Elke lege regel begint een nieuwe alinea.
 
 ---
 
