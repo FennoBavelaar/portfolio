@@ -142,6 +142,15 @@ content:
         type: string
         required: true
 
+  - name: over-mij
+    label: Over mij (lange tekst)
+    type: file
+    path: src/data/over-mij.md
+    fields:
+      - name: body
+        label: Tekst die openklapt onder "Oké, laten we het kort houden..."
+        type: rich-text
+
   - name: site
     label: Site-instellingen
     type: file
