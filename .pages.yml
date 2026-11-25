@@ -145,7 +145,7 @@ content:
     fields:
       - name: body
         label: Tekst
-        description: 'Zet [meer] op de plek waar de tekst wordt afgekapt. Alles daarvoor staat altijd in beeld (met ... erachter), de rest klapt open na de knop.'
+        description: 'Zet [meer] op de plek waar de tekst eerst wordt afgekapt. Daar staat dan ... en na een klik op de knop loopt de tekst gewoon verder.'
         type: rich-text
       - name: knop_meer
         label: Tekst op de knop (dicht)

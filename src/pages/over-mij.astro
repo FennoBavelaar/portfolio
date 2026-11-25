@@ -20,20 +20,22 @@ const { zichtbaar, rest } = afkappen(html);
     <h1 class="visually-hidden">Over mij</h1>
 
     <div class="about__text">
-      <div class="about__lead" set:html={zichtbaar} />
       <button
         id="about-toggle"
         class="about__toggle"
         type="button"
         aria-expanded="false"
-        aria-controls="about-meer"
+        aria-controls="about-tekst"
         ><span class="about__label about__label--more">{knopMeer}</span><span class="about__label about__label--less" aria-hidden="true"
           >{knopMinder}</span
         ></button
       >
 
-      <div id="about-meer" class="about__more" hidden>
-        <div class="about__more-inner" set:html={rest} />
+      <div id="about-tekst">
+        <div class="about__lead" set:html={zichtbaar} />
+        <div id="about-meer" class="about__more" hidden>
+          <div class="about__more-inner" set:html={rest} />
+        </div>
       </div>
       <div class="about__spacer" aria-hidden="true"></div>
     </div>
@@ -50,11 +52,11 @@ const { zichtbaar, rest } = afkappen(html);
   .about__lead :global(p:last-child) {
     margin-bottom: 0;
   }
-  /* De knop staat links onder de openingszin. Beide labels zitten in dezelfde
+  /* De knop staat links boven de tekst. Beide labels zitten in dezelfde
      grid-cel, zodat de knop altijd even breed is en nooit verspringt. */
   .about__toggle {
     display: inline-grid;
-    margin-top: 0.9em;
+    margin-bottom: 1.1em;
     padding: 0.05em 0.65em 0.1em;
     border: 1.5px solid var(--blue);
     border-radius: var(--wobble-a);
@@ -113,6 +115,14 @@ const { zichtbaar, rest } = afkappen(html);
 
   const btn = document.getElementById('about-toggle') as HTMLButtonElement;
   const more = document.getElementById('about-meer') as HTMLElement;
+  const dots = document.querySelector<HTMLElement>('.about__dots');
+  const inline = document.querySelector<HTMLElement>('.about__inline');
+  // De rest van de afgekapte alinea + "..." wisselen
+  const setTekst = (open: boolean) => {
+    if (dots) dots.hidden = open;
+    if (inline) inline.hidden = !open;
+    more.hidden = !open;
+  };
   const paras = [...more.querySelectorAll('p')];
   const spacer = document.querySelector<HTMLElement>('.about__spacer')!;
   const labelMore = btn.querySelector('.about__label--more')!;
@@ -143,10 +153,11 @@ const { zichtbaar, rest } = afkappen(html);
     const top = btn.getBoundingClientRect().top;
     setExpanded(true);
     setSpacer(0);
-    more.hidden = false;
+    setTekst(true);
     pin(top);
     if (reducedMotion()) return;
-    gsap.killTweensOf([more, paras]);
+    gsap.killTweensOf([more, paras, inline]);
+    if (inline) gsap.fromTo(inline, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out' });
     gsap.fromTo(more, { height: 0 }, { height: 'auto', duration: 0.9, ease: 'expo.out', onUpdate: () => pin(top) });
     gsap.fromTo(paras, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.045, delay: 0.1 });
   }
@@ -157,19 +168,21 @@ const { zichtbaar, rest } = afkappen(html);
 
     // Meet hoe hoog de pagina straks is, zodat hij nooit korter wordt dan nodig
     // om de knop op exact dezelfde plek te houden.
-    more.hidden = true;
+    setTekst(false);
     const finalHeight = docHeight();
-    more.hidden = false;
+    setTekst(true);
     setSpacer(window.scrollY + window.innerHeight - finalHeight);
 
     const done = () => {
-      more.hidden = true;
+      setTekst(false);
       gsap.set(more, { clearProps: 'height' });
+      if (inline) gsap.set(inline, { clearProps: 'opacity' });
       gsap.set(paras, { clearProps: 'opacity,transform' });
       pin(top);
     };
     if (reducedMotion()) return done();
-    gsap.killTweensOf([more, paras]);
+    gsap.killTweensOf([more, paras, inline]);
+    if (inline) gsap.to(inline, { opacity: 0, duration: 0.3, delay: 0.3 });
     gsap.to(paras, { opacity: 0, y: -6, duration: 0.25, ease: 'power1.in', stagger: { each: 0.015, from: 'end' } });
     gsap.fromTo(more, { height: more.offsetHeight }, { height: 0, duration: 0.6, ease: 'expo.inOut', onUpdate: () => pin(top), onComplete: done });
   }

@@ -165,7 +165,7 @@ Ga in de CMS naar **Site-instellingen**. Daar pas je aan:
 
 Handmatig staat dit allemaal in `src/data/site.json`.
 
-De tekst op **Over mij** bewerk je in de CMS onder **Over mij**, in het veld **Tekst**. Zet daarin `[meer]` op de plek waar de tekst moet worden afgekapt: alles daarvoor staat altijd in beeld (met "..." erachter), de rest klapt open na de knop. Ook de tekst op de knop ("meer tonen" / "minder tonen") kun je daar aanpassen. Handmatig staat alles in `src/data/over-mij.md`. Elke lege regel begint een nieuwe alinea.
+De tekst op **Over mij** bewerk je in de CMS onder **Over mij**, in het veld **Tekst**. Zet daarin `[meer]` op de plek waar de tekst moet worden afgekapt: daar staat dan "...", en na een klik op de knop (die boven de tekst staat) verdwijnen de puntjes en loopt de tekst gewoon verder, ook midden in een zin. Ook de tekst op de knop ("meer tonen" / "minder tonen") kun je daar aanpassen. Handmatig staat alles in `src/data/over-mij.md`. Elke lege regel begint een nieuwe alinea.
 
 ---
 
